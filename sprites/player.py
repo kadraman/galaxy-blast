@@ -18,6 +18,11 @@ class Player(pg.sprite.Sprite):
             constants.SS_PLAYER_Y,
             constants.SS_PLAYER_WIDTH,
             constants.SS_PLAYER_HEIGHT], self.number_of_images, -1)
+
+        # scale explosion images to size of enemy images
+        for index, image in enumerate(self.images):
+            self.images[index] = pg.transform.scale(image, (32, 32))
+
         self.surface = self.images[0]
         self.rect = self.surface.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 40))
         self.image_index = 0

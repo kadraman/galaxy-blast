@@ -1,3 +1,3 @@
-### A template for writing Python games with PyGame
+### Intergalactic Space Blast
 
 This is a work in progress
