@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Retro Galaxy Blast
+Comment=Retro space shoot-em up
+Exec=python main.pyc
+Categories=games;
+Icon=icon

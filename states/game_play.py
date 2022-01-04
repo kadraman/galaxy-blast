@@ -11,6 +11,7 @@ from .base_state import BaseState
 from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.missile import Missile
+from sprites.digit import Digit
 from sprites.explosion import Explosion
 
 import constants
@@ -35,12 +36,17 @@ class GamePlay(BaseState):
         self.all_enemies = pg.sprite.Group()
         self.enemy_missiles = pygame.sprite.Group()
         self.all_bullets = pg.sprite.Group()
+
+        self.lifeImage = self.sprites.image_at(pg.Rect(775, 301, 33, 26))
+        self.digit = Digit(self.sprites)
+
         self.enemy_diving = False
         self.wave_count = 0
         self.enemies = 0
         self.number_of_enemies = 10
         self.number_of_attacking_enemies = 0
         self.max_attacking_enemies = 3
+        self.lives = 3
         self.score = 0
         self.high_score = 0
 
@@ -53,6 +59,17 @@ class GamePlay(BaseState):
         self.all_sprites.add(self.player)
         self.all_bullets = pg.sprite.Group()
         self.all_enemies = pg.sprite.Group()
+        self.enemy_missiles = pygame.sprite.Group()
+
+        self.done = False
+        self.enemy_diving = False
+        self.wave_count = 0
+        self.enemies = 0
+        self.number_of_enemies = 10
+        self.number_of_attacking_enemies = 0
+        self.max_attacking_enemies = 3
+        self.lives = 3
+        self.score = 0
 
     def get_event(self, event):
         if event.type == pg.QUIT:
@@ -81,7 +98,7 @@ class GamePlay(BaseState):
 
     def add_enemy(self):
         self.enemies += 1
-        enemy = Enemy(self.sprites, center=(self.screen_rect.left+50+(self.enemies * 50), 25))
+        enemy = Enemy(self.sprites, center=(self.screen_rect.left + 50 + (self.enemies * 50), 25))
         self.all_enemies.add(enemy)
         self.all_sprites.add(enemy)
 
@@ -128,6 +145,18 @@ class GamePlay(BaseState):
         surface.blit(background.image, background.rect)
         pressed_keys = pg.key.get_pressed()
 
+        # Display number of lives
+        for i in range(self.lives):
+            surface.blit(self.lifeImage, (i * 40 + 8, 4))
+
+        # Display score
+        score = str(self.score)
+        for i in range(1, len(score) + 1):
+            # In Python, a negative index into a list (or in this case, into a string) gives you items in reverse order,
+            # e.g. 'hello'[-1] gives 'o', 'hello'[-2] gives 'l', etc.
+            digit = int(score[-i])
+            surface.blit(self.digit.get_surface(digit), (468 - i * 24, 5))
+
         for entity in self.all_sprites:
             entity.update(pressed_keys)
 
@@ -144,7 +173,7 @@ class GamePlay(BaseState):
                 self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
                 # self.kill_sound.play()
 
-        result = pygame.sprite.spritecollideany(self.player, self.enemy_missiles)
+        result = pygame.sprite.spritecollide(self.player, self.enemy_missiles, True)
         if result:
             print("Shot by an enemy")
             self.all_sprites.add(Explosion(self.sprites, self.player.rect.center, self.player.rect.size))
@@ -154,13 +183,20 @@ class GamePlay(BaseState):
             # self.all_sprites.add(Explosion(self.explosion_sprites, result.rect[0], result.rect[1] - 30))
             # self.kill_sound.play()
             # self.freeze = True
-            self.next_state = "GAME_OVER"
-            self.done = True
-            self.player.kill()
+            print(str(self.lives))
+            if self.lives == 1:
+                self.next_state = "GAME_OVER"
+                self.done = True
+                self.player.kill()
+            else:
+                self.lives -= 1
 
         result = pg.sprite.spritecollideany(self.player, self.all_enemies)
         if result:
-            print("Enemy collided with player")
-            self.next_state = "GAME_OVER"
-            self.done = True
-            self.player.kill()
+            print("hit by an enemy")
+            if self.lives == 1:
+                self.next_state = "GAME_OVER"
+                self.done = True
+                self.player.kill()
+            else:
+                self.lives -= 1
