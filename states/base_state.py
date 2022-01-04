@@ -10,11 +10,15 @@ class BaseState(object):
     Base class for game states to inherit from.
     """
 
-    def __init__(self, persistent={}):
+    def __init__(self, persistent=None):
+        if persistent is None:
+            persistent = {}
         self.screen = pg.display.get_surface()
         self.screen_rect = self.screen.get_rect()
-        self.screen_color = pg.Color("black")
-        self.background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
+        self.default_screen_color = pg.Color("black")
+        self.screen_color = self.default_screen_color
+        self.default_background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
+        self.background = self.default_background
         self.font = pg.font.Font(constants.DEFAULT_FONT, constants.FONT_SIZE)
         self.done = False
         self.quit = False
@@ -39,7 +43,7 @@ class BaseState(object):
         self.done = False
         return self.persist
 
-    def get_event(self, event):
+    def get_event(self, event, joystick):
         """
         Handle a single event passed by the Game object.
         """

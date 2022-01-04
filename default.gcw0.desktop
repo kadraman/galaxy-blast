@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Retro Galaxy Blast
-Comment=Retro space shoot-em up
-Exec=python main.pyc
+Name=Galaxy Blast
+Comment=A retro space shooter
+Exec=./bin/run_gcw0.sh
 Categories=games;
-Icon=icon
+Icon=assets/images/icon

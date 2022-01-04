@@ -17,7 +17,17 @@ class MainMenu(BaseState):
     def startup(self, persistent):
         self.persist = persistent
         color = self.persist["screen_color"]
-        self.screen_color = pg.Color(color)
+        try:
+            color
+        except NameError:
+            color = self.default_screen_color
+        self.screen_color = color
+        background = self.persist["background"]
+        try:
+            background
+        except NameError:
+            background = self.default_background
+        self.background = background
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
@@ -34,7 +44,7 @@ class MainMenu(BaseState):
         elif self.active_index == 1:
             self.quit = True
 
-    def get_event(self, event):
+    def get_event(self, event, joystick):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYUP:
@@ -44,6 +54,19 @@ class MainMenu(BaseState):
                 self.active_index = 0 if self.active_index >= 1 else 1
             elif event.key == pg.K_RETURN:
                 self.handle_action()
+        elif event.type == pg.JOYAXISMOTION:
+            if joystick.get_axis(0) >= 0.5:
+                print("right has been pressed")
+            if joystick.get_axis(0) <= -1:
+                print("left has been pressed")
+            if joystick.get_axis(1) >= 0.5:
+                print("Down has been pressed")
+                self.active_index = 0 if self.active_index >= 1 else 1
+            if joystick.get_axis(1) <= -1:
+                print("Up has been pressed")
+                self.active_index = 1 if self.active_index <= 0 else 0
+        elif event.type == pg.JOYBUTTONDOWN:
+            print("Joystick Button pressed")
 
     def draw(self, surface):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])

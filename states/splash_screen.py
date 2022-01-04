@@ -20,11 +20,19 @@ class SplashScreen(BaseState):
     def startup(self, persistent):
         self.persist = persistent
         color = self.persist["screen_color"]
+        try:
+            color
+        except NameError:
+            color = self.default_screen_color
         self.screen_color = color
         background = self.persist["background"]
+        try:
+            background
+        except NameError:
+            background = self.default_background
         self.background = background
 
-    def get_event(self, event):
+    def get_event(self, event, joystick):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYUP:

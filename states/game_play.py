@@ -53,7 +53,18 @@ class GamePlay(BaseState):
     def startup(self, persistent):
         self.persist = persistent
         color = self.persist["screen_color"]
-        self.screen_color = pg.Color(color)
+        try:
+            color
+        except NameError:
+            color = self.default_screen_color
+        self.screen_color = color
+        background = self.persist["background"]
+        try:
+            background
+        except NameError:
+            background = self.default_background
+        self.background = background
+
         self.player = Player(self.sprites)
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.player)
@@ -71,7 +82,7 @@ class GamePlay(BaseState):
         self.lives = 3
         self.score = 0
 
-    def get_event(self, event):
+    def get_event(self, event, joystick):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == constants.ADD_ENEMY:

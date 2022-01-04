@@ -14,6 +14,15 @@ if __name__ == "__main__":
     # setup mixer to avoid sound lag
     pg.mixer.pre_init(44100, -16, 2, 2048)
     pg.init()
+    pg.joystick.init()
+    joystick = None
+    try:
+        joystick = pg.joystick.Joystick(0)
+        joystick.init()
+        print("Enabled joystick: {0}".format(joystick.get_name()))
+    except pg.error:
+        print("no joystick found.")
+
     screen = pg.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
     # the various states that the game can be in
     states = {
@@ -24,7 +33,8 @@ if __name__ == "__main__":
         "CREDITS": Credits()
     }
     # start game and set first state to "Splash Screen"
-    game = Game(screen, states, "SPLASH_SCREEN")
+    game = Game(screen, joystick, states, "SPLASH_SCREEN")
     game.run()
+    pg.joystick.quit()
     pg.quit()
     sys.exit()
