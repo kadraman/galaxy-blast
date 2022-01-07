@@ -1,3 +1,3 @@
-### Retro Galaxy Blast
+### kadraman's Galaxy Blast
 
-This is a work in progress
+A retro space shooter build in Python/PyGame
