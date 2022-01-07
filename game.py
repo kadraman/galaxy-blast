@@ -76,9 +76,19 @@ class Game(object):
         persistent = self.state.persist
         self.state.startup(persistent)
 
+        if constants.MUTE_SOUND:
+            pg.mixer.pause()
+        else:
+            pg.mixer.music.load('./assets/sounds/251461__joshuaempyre__arcade-music-loop.wav')
+            pg.mixer.music.play(-1)
+
+        dt = 0
         while not self.done:
-            dt = self.clock.tick(self.fps)
+            # dt = self.clock.tick(self.fps)
+            dt = self.clock.tick(self.fps)/1000.0
             self.event_loop()
             self.update(dt)
             self.draw()
-            pg.display.update()
+            pg.display.flip()
+
+        pg.mixer.music.stop()

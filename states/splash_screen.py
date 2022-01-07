@@ -10,8 +10,6 @@ import constants
 class SplashScreen(BaseState):
     def __init__(self):
         super(SplashScreen, self).__init__()
-        self.title = self.font.render(constants.TITLE, True, pg.Color("blue"))
-        self.title_rect = self.title.get_rect(center=self.screen_rect.center)
         self.persist["screen_color"] = pg.Color("black")
         self.persist["background"] = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         self.next_state = "MAIN_MENU"
@@ -39,14 +37,18 @@ class SplashScreen(BaseState):
             self.done = True
         elif event.type == pg.MOUSEBUTTONUP:
             self.done = True
+        elif event.type == pg.JOYBUTTONUP:
+            self.done = True
 
     def draw(self, surface):
-        surface.fill([255, 255, 255])
-        surface.blit(self.background.image, self.background.rect)
-        surface.blit(self.title, self.title_rect)
+        background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
+        surface.fill(self.screen_color)
+        surface.blit(background.image, background.rect)
+        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 150))
+        surface.blit(self.title_logo, self.title_logo_rect)
 
     def update(self, dt):
-        self.time_active += dt
+        self.time_active += dt * 1000
         # move to main menu automatically
         if self.time_active >= 2000:
             self.done = True

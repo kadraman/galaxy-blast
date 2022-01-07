@@ -88,21 +88,11 @@ class Digit(pg.sprite.Sprite):
         self.rect = self.surface.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 40))
         self.image_index = 0
 
-    def get_event(self, event):
+    def get_event(self, event, joystick):
         pass
 
-    def update(self, pressed_keys):
+    def update(self, dt):
         self.timer += 1
-
-        if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-5, 0)
-        if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(5, 0)
-
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > constants.SCREEN_WIDTH:
-            self.rect.right = constants.SCREEN_WIDTH
 
     def get_surface(self, digit):
         # if self.timer % self.interval == 0:

@@ -11,10 +11,11 @@ class MainMenu(BaseState):
     def __init__(self):
         super(MainMenu, self).__init__()
         self.active_index = 0
-        self.options = ["Start Game", "Quit Game"]
+        self.options = ["Start Game", "Settings", "Quit Game"]
         self.next_state = "GAME_PLAY"
 
     def startup(self, persistent):
+        self.active_index = 0
         self.persist = persistent
         color = self.persist["screen_color"]
         try:
@@ -35,43 +36,28 @@ class MainMenu(BaseState):
 
     def get_text_position(self, text, index):
         center = (self.screen_rect.center[0],
-                  self.screen_rect.center[1] + (index * 50))
+                  self.screen_rect.center[1] + (index * 50) + 75)
         return text.get_rect(center=center)
 
     def handle_action(self):
         if self.active_index == 0:
+            self.next_state = "GAME_PLAY"
             self.done = True
-        elif self.active_index == 1:
+        if self.active_index == 1:
+            self.next_state = "SETTINGS"
+            self.done = True
+        elif self.active_index == 2:
             self.quit = True
 
-    def get_event(self, event, joystick):
-        if event.type == pg.QUIT:
-            self.quit = True
-        elif event.type == pg.KEYUP:
-            if event.key == pg.K_UP:
-                self.active_index = 1 if self.active_index <= 0 else 0
-            elif event.key == pg.K_DOWN:
-                self.active_index = 0 if self.active_index >= 1 else 1
-            elif event.key == pg.K_RETURN:
-                self.handle_action()
-        elif event.type == pg.JOYAXISMOTION:
-            if joystick.get_axis(0) >= 0.5:
-                print("right has been pressed")
-            if joystick.get_axis(0) <= -1:
-                print("left has been pressed")
-            if joystick.get_axis(1) >= 0.5:
-                print("Down has been pressed")
-                self.active_index = 0 if self.active_index >= 1 else 1
-            if joystick.get_axis(1) <= -1:
-                print("Up has been pressed")
-                self.active_index = 1 if self.active_index <= 0 else 0
-        elif event.type == pg.JOYBUTTONDOWN:
-            print("Joystick Button pressed")
+    def get_event(self, event, controller):
+        self.menu_choice(event, controller)
 
     def draw(self, surface):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
-        surface.fill([255, 255, 255])
+        surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
+        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 150))
+        surface.blit(self.title_logo, self.title_logo_rect)
         for index, option in enumerate(self.options):
             text_render = self.render_text(index)
             surface.blit(text_render, self.get_text_position(

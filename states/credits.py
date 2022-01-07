@@ -20,12 +20,13 @@ class Credits(BaseState):
             center=instructions_center)
 
     def startup(self, persistent):
+        self.active_index = 0
         self.persist = persistent
         color = self.persist["screen_color"]
         self.screen_color = pg.Color(color)
 
-    def get_event(self, event):
-        self.game_choice(event)
+    def get_event(self, event, controller):
+        self.menu_choice(event, controller)
 
     def draw(self, surface):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
