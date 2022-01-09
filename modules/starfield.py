@@ -8,7 +8,7 @@ DARKGREY = (100, 100, 100)
 YELLOW = (120, 120, 0)
 
 
-class StarField():
+class StarField:
     def __init__(self):
         self.star_field_slow = self.create_stars(50)
         self.star_field_medium = self.create_stars(35)

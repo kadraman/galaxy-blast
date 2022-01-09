@@ -7,16 +7,19 @@ import constants
 
 
 class Missile(pg.sprite.Sprite):
-    def __init__(self, sprites, x_velocity, y_velocity):
+    def __init__(self, sprites, x_velocity, y_velocity, is_player_missile):
         super(Missile, self).__init__()
         self.timer = 0
         self.interval = 2
-        self.number_of_images = constants.SS_MISSILE_IMAGES
         self.x_velocity = x_velocity
         self.y_velocity = y_velocity
+        self.is_player_missile = is_player_missile
 
-        sprites = SpriteSheet('./assets/images/missile.png')
+        self.number_of_images = 2
+        sprites = SpriteSheet('./assets/images/missile-1.png')
         self.images = sprites.load_strip([0, 0, 3, 10], 1, -1)
+        sprites = SpriteSheet('./assets/images/missile-2.png')
+        self.images.append(sprites.image_at([0, 0, 3, 10], -1))
 
         '''
         self.images = sprites.load_strip([
@@ -43,6 +46,14 @@ class Missile(pg.sprite.Sprite):
 
     def update(self, dt):
         self.timer += 1
+        # if self.timer % self.interval == 0:
+        #     self.image_index += 1
+        # if self.image_index >= self.number_of_images:
+        #     self.image_index = 0
+        if self.is_player_missile:
+            self.image_index = 0
+        else:
+            self.image_index = 1
         self.rect.move_ip(self.x_velocity * dt, self.y_velocity * dt)
 
         if self.rect.bottom < 0 or self.rect.top > constants.SCREEN_HEIGHT:
@@ -52,11 +63,6 @@ class Missile(pg.sprite.Sprite):
         pass
 
     def get_surface(self):
-        if self.timer % self.interval == 0:
-            self.image_index += 1
-        if self.image_index >= self.number_of_images:
-            self.image_index = 0
-
         rotated_image = pg.transform.rotate(self.images[self.image_index], self.rotation)
         self.rect = rotated_image.get_rect(center=self.rect.center)
 

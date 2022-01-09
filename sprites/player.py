@@ -10,9 +10,15 @@ class Player(pg.sprite.Sprite):
         self.timer = 0
         self.interval = 2
         self.velocity = 100
-        self.number_of_images = 1
-        sprites = SpriteSheet('./assets/images/player-1.png')
-        self.images = sprites.load_strip([0, 0, 16, 16], 1, -1)
+
+        self.number_of_images = 3
+        sprites = SpriteSheet('./assets/images/player_ship-1.png')
+        self.images = sprites.load_strip([0, 0, 16, 20], 1, -1)
+        sprites = SpriteSheet('./assets/images/player_ship-2.png')
+        self.images.append(sprites.image_at([0, 0, 16, 20], -1))
+        sprites = SpriteSheet('./assets/images/player_ship-3.png')
+        self.images.append(sprites.image_at([0, 0, 16, 20], -1))
+
         '''
         self.number_of_images = constants.SS_PLAYER_IMAGES
         self.images = sprites.load_strip([

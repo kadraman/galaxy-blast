@@ -8,13 +8,13 @@ from modules import sprite_sheet
 from modules.display_utils import BackGround
 from modules.sound_utils import SoundEffect
 from modules.starfield import StarField
+from modules.pixel_explosion import PixelExplosion
 from modules.sprite_sheet import SpriteSheet
 
 from .base_state import BaseState
 from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.missile import Missile
-from sprites.digit import Digit
 from sprites.explosion import Explosion
 
 import constants
@@ -30,11 +30,13 @@ class GamePlay(BaseState):
         # send ENEMY_FIRES event every 1000ms
         pygame.time.set_timer(constants.ENEMY_FIRES, 1000)
 
+        self.pixel_explosion = None
         self.starfield = StarField()
         self.laser = SoundEffect("assets/sounds/laser.ogg")
         self.shoot_sound = pg.mixer.Sound("./assets/sounds/laser.ogg")
         self.kill_sound = pg.mixer.Sound("./assets/sounds/kill.ogg")
         self.hit_sound = pg.mixer.Sound("./assets/sounds/explosion.ogg")
+        self.game_over_explosion = pg.mixer.Sound("./assets/sounds/368591__jofae__retro-explosion.ogg")
 
         self.score_font = pg.font.Font(constants.DEFAULT_FONT, 12)
 
@@ -62,6 +64,8 @@ class GamePlay(BaseState):
         self.lives = 3
         self.score = 0
         self.high_score = 0
+        self.freeze = False
+        self.interval = 0
 
     def startup(self, persistent):
         self.persist = persistent
@@ -94,10 +98,13 @@ class GamePlay(BaseState):
         self.max_attacking_enemies = 3
         self.lives = 3
         self.score = 0
+        self.freeze = False
+        self.interval = 0
 
     def get_event(self, event, joystick):
         if event.type == pg.QUIT:
-            self.quit = True
+            self.next_state = "SPLASH_SCREEN"
+            self.done = True
         elif event.type == constants.ADD_ENEMY:
             if self.enemies < self.number_of_enemies:
                 self.add_enemy()
@@ -116,7 +123,9 @@ class GamePlay(BaseState):
             elif event.key == pg.K_RIGHT:
                 self.player.is_moving_right = True
         elif event.type == pg.KEYUP:
+            # TODO: Pause rather than return to main menu
             if event.key == pg.K_ESCAPE:
+                self.next_state = "MAIN_MENU"
                 self.done = True
             elif event.key == pg.K_LEFT:
                 self.player.is_moving_left = False
@@ -145,16 +154,11 @@ class GamePlay(BaseState):
         surface.fill(self.screen_color)
         self.starfield.render(surface)
 
+        if self.pixel_explosion is not None:
+            self.pixel_explosion.render(surface)
+
         # Display score and lives
         self.draw_score(surface)
-        '''
-        score = str(self.score)
-        for i in range(1, len(score) + 1):
-            # In Python, a negative index into a list (or in this case, into a string) gives you items in reverse order,
-            # e.g. 'hello'[-1] gives 'o', 'hello'[-2] gives 'l', etc.
-            digit = int(score[-i])
-            surface.blit(self.digit.get_surface(digit), (468 - i * 24, 5))
-        '''
 
         for entity in self.all_sprites:
             surface.blit(entity.get_surface(), entity.rect)
@@ -163,41 +167,53 @@ class GamePlay(BaseState):
         for entity in self.all_sprites:
             entity.update(dt)
 
-        result = pg.sprite.groupcollide(self.all_enemies, self.all_bullets, True, True)
-        if result:
-            for key in result:
-                self.score += 10
-                if self.score > self.high_score:
-                    self.high_score = self.score
-                self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
+        if self.pixel_explosion is not None:
+            self.pixel_explosion.update(dt)
+
+        # we are done just wait for animations to complete
+        if self.freeze:
+            if self.interval >= 20:
+                self.done = True
+            else:
+                self.interval += 1
+        else:
+            result = pg.sprite.groupcollide(self.all_enemies, self.all_bullets, True, True)
+            if result:
+                for key in result:
+                    self.score += 10
+                    if self.score > self.high_score:
+                        self.high_score = self.score
+                    self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
+                    if not constants.MUTE_SOUND:
+                        self.kill_sound.play()
+
+            result = pygame.sprite.spritecollide(self.player, self.enemy_missiles, True)
+            if result:
+                self.all_sprites.add(Explosion(self.sprites, self.player.rect.center, self.player.rect.size))
                 if not constants.MUTE_SOUND:
-                    self.kill_sound.play()
+                    self.hit_sound.play()
+                if self.lives == 1:
+                    self.next_state = "GAME_OVER"
+                    self.freeze = True
+                    # self.done = True
+                    self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 500)
+                    self.game_over_explosion.play()
+                    self.player.kill()
+                else:
+                    self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 300)
+                    self.lives -= 1
 
-        result = pygame.sprite.spritecollide(self.player, self.enemy_missiles, True)
-        if result:
-            self.all_sprites.add(Explosion(self.sprites, self.player.rect.center, self.player.rect.size))
-            # self.all_sprites.add(Explosion(self.sprites, result.rect[0], result.rect[1]))
-            # self.all_sprites.add(Explosion(self.sprites, result.rect[0] - 30, result.rect[1] - 30))
-            # self.all_sprites.add(Explosion(self.sprites, result.rect[0] + 30, result.rect[1] + 30))
-            # self.all_sprites.add(Explosion(self.sprites, result.rect[0], result.rect[1] - 30))
-            if not constants.MUTE_SOUND:
-                self.hit_sound.play()
-            # self.freeze = True
-            if self.lives == 1:
-                self.next_state = "GAME_OVER"
-                self.done = True
-                self.player.kill()
-            else:
-                self.lives -= 1
-
-        result = pg.sprite.spritecollideany(self.player, self.all_enemies)
-        if result:
-            if self.lives == 1:
-                self.next_state = "GAME_OVER"
-                self.done = True
-                self.player.kill()
-            else:
-                self.lives -= 1
+            result = pg.sprite.spritecollideany(self.player, self.all_enemies)
+            if result:
+                if self.lives == 1:
+                    self.next_state = "GAME_OVER"
+                    self.freeze = True
+                    self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 500)
+                    if not constants.MUTE_SOUND:
+                        self.game_over_explosion.play()
+                    self.player.kill()
+                else:
+                    self.lives -= 1
 
     '''
     Supporting functions
@@ -212,7 +228,7 @@ class GamePlay(BaseState):
     def player_fires(self):
         x_velocity = 0
         y_velocity = -250
-        bullet = Missile(self.sprites, x_velocity, y_velocity)
+        bullet = Missile(self.sprites, x_velocity, y_velocity, True)
         bullet.rect.centerx = self.player.rect.centerx
         self.all_bullets.add(bullet)
         self.all_sprites.add(bullet)
@@ -242,7 +258,7 @@ class GamePlay(BaseState):
                 number_of_steps = self.weird_division(dy, y_velocity)
                 x_velocity = self.weird_division(dx, number_of_steps)
 
-                missile = Missile(self.sprites, x_velocity, y_velocity)
+                missile = Missile(self.sprites, x_velocity, y_velocity, False)
                 missile.rect.centerx = start_missile[0]
                 missile.rect.centery = start_missile[1]
 

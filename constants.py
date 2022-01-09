@@ -10,7 +10,7 @@ ENEMY_MOVE_DOWN = 16
 SPRITE_SHEET = './assets/images/spritesheet.png'
 DEFAULT_FONT = './assets/fonts/BarcadeBrawlRegular.ttf'
 DEFAULT_BACKGROUND = './assets/images/stars.png'
-MUTE_SOUND = False
+MUTE_SOUND = True
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -24,8 +24,8 @@ ADD_ENEMY = pg.USEREVENT + 1  # 25
 DIVE_ENEMY = pg.USEREVENT + 2  # 26
 ENEMY_FIRES = pg.USEREVENT + 3  # 27
 
-ENEMY_WIDTH = 32
-ENEMY_HEIGHT = 32
+ENEMY_1_WIDTH = 25
+ENEMY_1_HEIGHT = 25
 
 '''
 locations of sprites in sprite sheet
