@@ -1,7 +1,7 @@
 import pygame as pg
 import pygame.sprite
 
-from random import seed
+from random import seed, random
 from random import randint
 
 from modules import sprite_sheet
@@ -10,10 +10,12 @@ from modules.sound_utils import SoundEffect
 from modules.starfield import StarField
 from modules.pixel_explosion import PixelExplosion
 from modules.sprite_sheet import SpriteSheet
+from sprites.base_enemy import EnemyType
+from sprites.master_enemy import MasterEnemy
 
 from .base_state import BaseState
 from sprites.player import Player
-from sprites.enemy import Enemy
+from sprites.minion_enemy import MinionEnemy
 from sprites.missile import Missile
 from sprites.explosion import Explosion
 
@@ -23,10 +25,13 @@ import constants
 class GamePlay(BaseState):
     def __init__(self):
         super(GamePlay, self).__init__()
+
         # send ADD_ENEMY event every 450ms
         pygame.time.set_timer(constants.ADD_ENEMY, 450)
         # send DIVE_ENEMY event every 6000ms
         pygame.time.set_timer(constants.DIVE_ENEMY, 6000)
+        # send LEAVE_ENEMY event every 6000ms
+        pygame.time.set_timer(constants.LEAVE_ENEMY, 6000)
         # send ENEMY_FIRES event every 1000ms
         pygame.time.set_timer(constants.ENEMY_FIRES, 1000)
 
@@ -52,15 +57,18 @@ class GamePlay(BaseState):
 
         life_sprite = SpriteSheet('./assets/images/player-1.png')
         self.life_image = life_sprite.image_at(pg.Rect(0, 0, 16, 16))
-        self.digit = Digit(self.sprites)
 
         self.padding_top = 32
-        self.enemy_diving = False
         self.wave_count = 0
-        self.enemies = 0
-        self.number_of_enemies = 10
-        self.number_of_attacking_enemies = 0
-        self.max_attacking_enemies = 3
+        self.minion_enemies = 0
+        self.max_minion_enemies = 10
+        self.attacking_minion_enemies = 0
+        self.max_attacking_minion_enemies = 3
+        self.minion_y_start = 80
+        self.master_enemies = 0
+        self.attacking_master_enemies = 0
+        self.max_attacking_master_enemies = 1
+        self.master_y_start = 32
         self.lives = 3
         self.score = 0
         self.high_score = 0
@@ -90,12 +98,11 @@ class GamePlay(BaseState):
         self.enemy_missiles = pygame.sprite.Group()
 
         self.done = False
-        self.enemy_diving = False
         self.wave_count = 0
-        self.enemies = 0
-        self.number_of_enemies = 10
-        self.number_of_attacking_enemies = 0
-        self.max_attacking_enemies = 3
+        self.minion_enemies = 0
+        self.max_minion_enemies = 10
+        self.attacking_minion_enemies = 0
+        self.max_attacking_minion_enemies = 3
         self.lives = 3
         self.score = 0
         self.freeze = False
@@ -106,15 +113,18 @@ class GamePlay(BaseState):
             self.next_state = "SPLASH_SCREEN"
             self.done = True
         elif event.type == constants.ADD_ENEMY:
-            if self.enemies < self.number_of_enemies:
-                self.add_enemy()
+            if self.minion_enemies < self.max_minion_enemies:
+                self.add_enemy(EnemyType.MINION)
+            if self.master_enemies == 0:
+                self.add_enemy(EnemyType.MASTER)
             elif len(self.all_enemies) == 0:
-                self.enemies = 0
+                self.minion_enemies = 0
+                self.master_enemies = 0
                 self.wave_count += 1
-                if self.wave_count > 2:
-                    self.wave_count = 0
+        elif event.type == constants.LEAVE_ENEMY:
+            self.enemy_leave(EnemyType.MASTER)
         elif event.type == constants.DIVE_ENEMY:
-            self.enemy_attack()
+            self.enemy_attack(EnemyType.MINION)
         elif event.type == constants.ENEMY_FIRES:
             self.enemy_fires()
         elif event.type == pg.KEYDOWN:
@@ -148,20 +158,16 @@ class GamePlay(BaseState):
                 self.player_fires()
 
     def draw(self, surface):
-        # background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
-        # surface.fill([255, 255, 255])
-        # surface.blit(background.image, background.rect)
         surface.fill(self.screen_color)
         self.starfield.render(surface)
 
-        if self.pixel_explosion is not None:
-            self.pixel_explosion.render(surface)
-
-        # Display score and lives
-        self.draw_score(surface)
+        self.draw_scores_and_lives(surface)
 
         for entity in self.all_sprites:
             surface.blit(entity.get_surface(), entity.rect)
+
+        if self.pixel_explosion is not None:
+            self.pixel_explosion.render(surface)
 
     def update(self, dt):
         for entity in self.all_sprites:
@@ -180,7 +186,7 @@ class GamePlay(BaseState):
             result = pg.sprite.groupcollide(self.all_enemies, self.all_bullets, True, True)
             if result:
                 for key in result:
-                    self.score += 10
+                    self.score += key.points
                     if self.score > self.high_score:
                         self.high_score = self.score
                     self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
@@ -197,7 +203,8 @@ class GamePlay(BaseState):
                     self.freeze = True
                     # self.done = True
                     self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 500)
-                    self.game_over_explosion.play()
+                    if not constants.MUTE_SOUND:
+                        self.game_over_explosion.play()
                     self.player.kill()
                 else:
                     self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 300)
@@ -219,9 +226,21 @@ class GamePlay(BaseState):
     Supporting functions
     '''
 
-    def add_enemy(self):
-        self.enemies += 1
-        enemy = Enemy(self.sprites, center=(self.screen_rect.left + 50 + (self.enemies * 50), self.padding_top))
+    def add_enemy(self, enemy_type):
+        if enemy_type == EnemyType.MINION:
+            enemy = MinionEnemy(enemy_type, self.sprites,
+                                center=(self.screen_rect.left + 50 + (self.minion_enemies * 50), self.minion_y_start),
+                                x_velocity=100, y_velocity=100,
+                                number_of_images=2,
+                                scaled_width=25, scaled_height=25)
+            self.minion_enemies += 1
+        elif enemy_type == EnemyType.MASTER:
+            enemy = MasterEnemy(enemy_type, self.sprites,
+                                center=(randint(self.screen_rect.left + 50, self.screen_rect.right - 50), self.master_y_start),
+                                x_velocity=200, y_velocity=0,
+                                number_of_images=2,
+                                scaled_width=30, scaled_height=28)
+            self.master_enemies += 1
         self.all_enemies.add(enemy)
         self.all_sprites.add(enemy)
 
@@ -235,11 +254,22 @@ class GamePlay(BaseState):
         if not constants.MUTE_SOUND:
             self.shoot_sound.play()
 
-    def enemy_attack(self):
-        if self.number_of_attacking_enemies < self.max_attacking_enemies:
+    def enemy_attack(self, enemy_type):
+        if enemy_type == EnemyType.MINION:
+            if self.attacking_minion_enemies < self.max_attacking_minion_enemies:
+                for entity in self.all_enemies:
+                    if not entity.is_attacking() and entity.enemy_type == enemy_type and randint(0, 2) < 1:
+                        entity.attack()
+
+    def enemy_leave(self, enemy_type):
+        if enemy_type == EnemyType.MASTER:
             for entity in self.all_enemies:
-                if not entity.is_attacking() and randint(0, 2) < 1:
-                    entity.attack()
+                if entity.is_leaving and entity.enemy_type == enemy_type:
+                    print("master_leaving")
+                    self.all_sprites.remove(entity)
+                    self.all_enemies.remove(entity)
+                    entity.kill()
+                    self.master_enemies -= 1
 
     def enemy_fires(self):
         num_enemies = len(self.all_enemies)
@@ -265,7 +295,7 @@ class GamePlay(BaseState):
                 self.enemy_missiles.add(missile)
                 self.all_sprites.add(missile)
 
-    def draw_score(self, surface):
+    def draw_scores_and_lives(self, surface):
         score = self.score_font.render('SCORE', True, (255, 20, 20))
         surface.blit(score, (constants.SCREEN_WIDTH / 2 - 280 - score.get_rect().width / 2, 2))
         score = self.score_font.render(str(self.score), True, (255, 255, 255))
