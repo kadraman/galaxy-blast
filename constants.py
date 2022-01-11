@@ -10,7 +10,7 @@ ENEMY_MOVE_DOWN = 16
 SPRITE_SHEET = './assets/images/spritesheet.png'
 DEFAULT_FONT = './assets/fonts/BarcadeBrawlRegular.ttf'
 DEFAULT_BACKGROUND = './assets/images/stars.png'
-MUTE_SOUND = True
+PLAY_SOUNDS = True
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -29,7 +29,7 @@ ENEMY_FIRES = pg.USEREVENT + 5  # 29
 MINION_ENEMY_WIDTH = 25
 MINION_ENEMY_HEIGHT = 25
 MASTER_ENEMY_WIDTH = 30
-MASTER_ENEMY_WIDTH = 28
+MASTER_ENEMY_HEIGHT = 28
 BOSS_ENEMY_WIDTH = 25
 BOSS_ENEMY_HEIGHT = 25
 

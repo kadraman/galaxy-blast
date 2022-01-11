@@ -30,6 +30,10 @@ class MainMenu(BaseState):
             background = self.default_background
         self.background = background
 
+        if constants.PLAY_SOUNDS:
+            pg.mixer.music.load('./assets/sounds/179511__clinthammer__clinthammermusic-gamerstep-bass-triplets.wav')
+            pg.mixer.music.play(-1)
+
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
         return self.font.render(self.options[index], True, color)

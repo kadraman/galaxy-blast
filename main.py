@@ -15,7 +15,7 @@ import constants
 
 if __name__ == "__main__":
     # setup mixer to avoid sound lag
-    pg.mixer.pre_init(44100, -16, 2, 2048)
+    pg.mixer.pre_init(44100, -16, 2, 4096)
     pg.init()
     pg.mixer.init()
     pg.joystick.init()
