@@ -37,6 +37,8 @@ class Player(pg.sprite.Sprite):
         self.image_index = 0
         self.is_moving_left = False
         self.is_moving_right = False
+        self.is_moving_up = False
+        self.is_moving_down = False
         self.is_shooting = False
 
     def get_event(self, event):
@@ -49,11 +51,19 @@ class Player(pg.sprite.Sprite):
             self.rect.move_ip(-1 * (self.velocity * dt), 0)
         if self.is_moving_right:
             self.rect.move_ip(self.velocity * dt, 0)
+        if self.is_moving_up:
+            self.rect.move_ip(0, -1 * (self.velocity * dt))
+        if self.is_moving_down:
+            self.rect.move_ip(0, self.velocity * dt)
 
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > constants.SCREEN_WIDTH:
             self.rect.right = constants.SCREEN_WIDTH
+        if self.rect.top < 50:
+            self.rect.top = 0
+        if self.rect.bottom > constants.SCREEN_HEIGHT:
+            self.rect.bottom = constants.SCREEN_HEIGHT
 
     def get_surface(self):
         if self.timer % self.interval == 0:

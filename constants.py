@@ -20,10 +20,11 @@ TXT_GAME_OVER = 'Press ENTER to go to main menu, R to restart or ESC to quit'
 TXT_CREDITS = 'This game was written by ...'
 
 # user defined events
-ADD_ENEMY = pg.USEREVENT + 1  # 25
-DIVE_ENEMY = pg.USEREVENT + 2  # 26
-LEAVE_ENEMY = pg.USEREVENT + 3  # 27
-ENEMY_FIRES = pg.USEREVENT + 4  # 28
+ADD_MINION_ENEMY = pg.USEREVENT + 1  # 25
+ADD_MASTER_ENEMY = pg.USEREVENT + 2  # 26
+DIVE_ENEMY = pg.USEREVENT + 3  # 27
+LEAVE_ENEMY = pg.USEREVENT + 4  # 28
+ENEMY_FIRES = pg.USEREVENT + 5  # 29
 
 MINION_ENEMY_WIDTH = 25
 MINION_ENEMY_HEIGHT = 25

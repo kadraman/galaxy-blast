@@ -26,8 +26,10 @@ class GamePlay(BaseState):
     def __init__(self):
         super(GamePlay, self).__init__()
 
-        # send ADD_ENEMY event every 450ms
-        pygame.time.set_timer(constants.ADD_ENEMY, 450)
+        # send ADD_MINION_ENEMY event every 450ms
+        pygame.time.set_timer(constants.ADD_MINION_ENEMY, 450)
+        # send ADD_MASTER_ENEMY event every 6000ms
+        pygame.time.set_timer(constants.ADD_MASTER_ENEMY, 6000)
         # send DIVE_ENEMY event every 6000ms
         pygame.time.set_timer(constants.DIVE_ENEMY, 6000)
         # send LEAVE_ENEMY event every 6000ms
@@ -112,15 +114,16 @@ class GamePlay(BaseState):
         if event.type == pg.QUIT:
             self.next_state = "SPLASH_SCREEN"
             self.done = True
-        elif event.type == constants.ADD_ENEMY:
+        elif event.type == constants.ADD_MINION_ENEMY:
             if self.minion_enemies < self.max_minion_enemies:
                 self.add_enemy(EnemyType.MINION)
-            if self.master_enemies == 0:
-                self.add_enemy(EnemyType.MASTER)
             elif len(self.all_enemies) == 0:
                 self.minion_enemies = 0
                 self.master_enemies = 0
                 self.wave_count += 1
+        elif event.type == constants.ADD_MASTER_ENEMY:
+            if self.master_enemies == 0:
+                self.add_enemy(EnemyType.MASTER)
         elif event.type == constants.LEAVE_ENEMY:
             self.enemy_leave(EnemyType.MASTER)
         elif event.type == constants.DIVE_ENEMY:
@@ -132,6 +135,10 @@ class GamePlay(BaseState):
                 self.player.is_moving_left = True
             elif event.key == pg.K_RIGHT:
                 self.player.is_moving_right = True
+            elif event.key == pg.K_UP:
+                self.player.is_moving_up = True
+            elif event.key == pg.K_DOWN:
+                self.player.is_moving_down = True
         elif event.type == pg.KEYUP:
             # TODO: Pause rather than return to main menu
             if event.key == pg.K_ESCAPE:
@@ -141,6 +148,10 @@ class GamePlay(BaseState):
                 self.player.is_moving_left = False
             elif event.key == pg.K_RIGHT:
                 self.player.is_moving_right = False
+            elif event.key == pg.K_UP:
+                self.player.is_moving_up = False
+            elif event.key == pg.K_DOWN:
+                self.player.is_moving_down = False
             elif event.key == pg.K_RETURN or event.key == pg.K_SPACE:
                 if len(self.all_bullets) < 2:
                     self.player_fires()
@@ -235,6 +246,7 @@ class GamePlay(BaseState):
                                 scaled_width=25, scaled_height=25)
             self.minion_enemies += 1
         elif enemy_type == EnemyType.MASTER:
+            self.master_y_start = randint(50, constants.SCREEN_HEIGHT - 100)
             enemy = MasterEnemy(enemy_type, self.sprites,
                                 center=(randint(self.screen_rect.left + 50, self.screen_rect.right - 50), self.master_y_start),
                                 x_velocity=200, y_velocity=0,
@@ -265,7 +277,6 @@ class GamePlay(BaseState):
         if enemy_type == EnemyType.MASTER:
             for entity in self.all_enemies:
                 if entity.is_leaving and entity.enemy_type == enemy_type:
-                    print("master_leaving")
                     self.all_sprites.remove(entity)
                     self.all_enemies.remove(entity)
                     entity.kill()
