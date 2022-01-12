@@ -10,10 +10,10 @@ import constants
 class Credits(BaseState):
     def __init__(self):
         super(Credits, self).__init__()
-        self.title = self.font.render("You Won", True, pg.Color("white"))
+        self.title = self.default_font.render("You Won", True, pg.Color("white"))
         self.title_rect = self.title.get_rect(center=self.screen_rect.center)
-        self.instructions = self.font.render(constants.TXT_CREDITS,
-                                             True, pg.Color("white"))
+        self.instructions = self.default_font.render(constants.TXT_CREDITS,
+                                                     True, pg.Color("white"))
         instructions_center = (
             self.screen_rect.center[0], self.screen_rect.center[1] + 50)
         self.instructions_rect = self.instructions.get_rect(

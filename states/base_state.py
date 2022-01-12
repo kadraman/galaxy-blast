@@ -19,11 +19,8 @@ class BaseState(object):
         self.screen_color = self.default_screen_color
         self.default_background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         self.background = self.default_background
-        self.font = pg.font.Font(constants.DEFAULT_FONT, constants.FONT_SIZE)
-        self.author = self.font.render(constants.AUTHOR, True, pg.Color("blue"))
-        self.author_rect = self.author.get_rect(center=self.screen_rect.center)
-        self.title_logo = pg.image.load('./assets/images/title-text.png')
-        self.title_logo_rect = self.title_logo.get_rect(center=self.screen_rect.center)
+        self.default_font = pg.font.Font(constants.DEFAULT_FONT, constants.DEFAULT_FONT_SIZE)
+        self.title_font = pg.font.Font(constants.TITLE_FONT, constants.TITLE_FONT_SIZE)
         self.done = False
         self.quit = False
         self.next_state = None

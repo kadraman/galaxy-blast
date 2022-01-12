@@ -15,6 +15,12 @@ class SplashScreen(BaseState):
         self.next_state = "MAIN_MENU"
         self.time_active = 0
 
+        self.author = self.default_font.render(constants.AUTHOR, True, pg.Color("blue"))
+        self.author_rect = self.author.get_rect(center=self.screen_rect.center)
+
+        self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
+        self.title_rect = self.title.get_rect(center=self.screen_rect.center)
+
         self.intro_sound = pg.mixer.Sound("./assets/sounds/368691__fartbiscuit1700__8-bit-arcade-video-game-start-sound-effect-gun-reload-and-jump.ogg")
         self.intro_sound.play()
 
@@ -47,8 +53,8 @@ class SplashScreen(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
-        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 150))
-        surface.blit(self.title_logo, self.title_logo_rect)
+        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 50))
+        surface.blit(self.title, (constants.SCREEN_WIDTH / 2 - self.title_rect.width / 2, 150))
 
     def update(self, dt):
         self.time_active += dt * 1000

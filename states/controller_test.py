@@ -41,7 +41,7 @@ class ControllerTest(BaseState):
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
-        return self.font.render(self.options[index], True, color)
+        return self.default_font.render(self.options[index], True, color)
 
     def get_text_position(self, text, index):
         center = (self.screen_rect.center[0],

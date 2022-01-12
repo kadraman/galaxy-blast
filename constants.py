@@ -4,20 +4,24 @@ AUTHOR = "kadraman's"
 TITLE = "Galaxy Blast"
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
-FONT_SIZE = 18
 FPS = 30
 ENEMY_MOVE_DOWN = 16
 SPRITE_SHEET = './assets/images/spritesheet.png'
 DEFAULT_FONT = './assets/fonts/BarcadeBrawlRegular.ttf'
+DEFAULT_FONT_SIZE = 18
+TITLE_FONT = "./assets/fonts/OASIS.TTF"
+TITLE_FONT_SIZE = 40
 DEFAULT_BACKGROUND = './assets/images/stars.png'
 PLAY_SOUNDS = True
 
 # Define some colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED = (0, 0, 0)
+GREEN = (0, 0, 0)
+BLUE = (0, 0, 0)
 
-TXT_GAME_OVER = 'Press ENTER to go to main menu, R to restart or ESC to quit'
-TXT_CREDITS = 'This game was written by ...'
+TXT_CREDITS = 'This game was written by kadraman'
 
 # user defined events
 ADD_MINION_ENEMY = pg.USEREVENT + 1  # 25
@@ -67,29 +71,3 @@ SS_PLAYER_LIVES_X = 775
 SS_PLAYER_LIVES_Y = 301
 SS_PLAYER_LIVES_WIDTH = 33
 SS_PLAYER_LIVES_HEIGHT = 26
-# score numbers
-SS_DIGIT_IMAGES = 10
-SS_DIGIT_WIDTH = 19
-SS_DIGIT_HEIGHT = 19
-SS_DIGIT0_X = 367
-SS_DIGIT0_Y = 644
-SS_DIGIT1_X = 205
-SS_DIGIT1_Y = 688
-SS_DIGIT2_X = 406
-SS_DIGIT2_Y = 290
-SS_DIGIT3_X = 580
-SS_DIGIT3_Y = 707
-SS_DIGIT4_X = 386
-SS_DIGIT4_Y = 644
-SS_DIGIT5_X = 628
-SS_DIGIT5_Y = 646
-SS_DIGIT6_X = 671
-SS_DIGIT6_Y = 1002
-SS_DIGIT7_X = 690
-SS_DIGIT7_Y = 1004
-SS_DIGIT8_X = 709
-SS_DIGIT8_Y = 1004
-SS_DIGIT9_X = 491
-SS_DIGIT9_Y = 215
-SS_DIGITX_X = 382
-SS_DIGITX_Y = 814

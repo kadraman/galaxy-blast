@@ -14,7 +14,7 @@ class GameOver(BaseState):
         self.music_playing = False
         self.active_index = 0
         self.options = ["Restart Game", "Main Menu", "Quit Game", ]
-        self.title = self.font.render("Game Over", True, pg.Color("green"))
+        self.title = self.default_font.render("Game Over", True, pg.Color("green"))
         title_center = (
             self.screen_rect.center[0], self.screen_rect.center[1] - 100)
         self.title_rect = self.title.get_rect(center=title_center)
@@ -47,7 +47,7 @@ class GameOver(BaseState):
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
-        return self.font.render(self.options[index], True, color)
+        return self.default_font.render(self.options[index], True, color)
 
     def get_text_position(self, text, index):
         center = (self.screen_rect.center[0],

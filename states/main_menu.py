@@ -14,6 +14,12 @@ class MainMenu(BaseState):
         self.options = ["Start Game", "Settings", "Quit Game"]
         self.next_state = "GAME_PLAY"
 
+        self.author = self.default_font.render(constants.AUTHOR, True, pg.Color("blue"))
+        self.author_rect = self.author.get_rect(center=self.screen_rect.center)
+
+        self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
+        self.title_rect = self.title.get_rect(center=self.screen_rect.center)
+
     def startup(self, persistent):
         self.active_index = 0
         self.persist = persistent
@@ -36,7 +42,7 @@ class MainMenu(BaseState):
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
-        return self.font.render(self.options[index], True, color)
+        return self.default_font.render(self.options[index], True, color)
 
     def get_text_position(self, text, index):
         center = (self.screen_rect.center[0],
@@ -60,8 +66,9 @@ class MainMenu(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
-        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 150))
-        surface.blit(self.title_logo, self.title_logo_rect)
+        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 50))
+        surface.blit(self.title, (constants.SCREEN_WIDTH / 2 - self.title_rect.width / 2, 150))
+
         for index, option in enumerate(self.options):
             text_render = self.render_text(index)
             surface.blit(text_render, self.get_text_position(
