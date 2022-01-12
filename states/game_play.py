@@ -45,7 +45,7 @@ class GamePlay(BaseState):
         self.starfield = StarField()
         self.shoot_sound = pg.mixer.Sound("./assets/sounds/321102__nsstudios__laser1.ogg")
         self.kill_sound = pg.mixer.Sound("./assets/sounds/170145__timgormly__8-bit-explosion1.ogg")
-        self.hit_sound = pg.mixer.Sound("./assets/sounds/explosion.ogg")
+        self.hit_sound = pg.mixer.Sound("./assets/sounds/344303__musiclegends__explosion52.ogg")
         self.level_up_sound = pg.mixer.Sound("./assets/sounds/609335__kenneth-cooney__levelup.ogg")
         self.game_over_explosion = pg.mixer.Sound("./assets/sounds/368591__jofae__retro-explosion.ogg")
 
@@ -68,14 +68,13 @@ class GamePlay(BaseState):
         self.padding_top = 32
         self.wave_count = 0
         self.minion_enemies = 0
-        self.max_minion_enemies = 10
+        self.max_minion_enemies = 12
         self.attacking_minion_enemies = 0
         self.max_attacking_minion_enemies = 3
         self.minion_y_start = 80
         self.master_enemies = 0
         self.attacking_master_enemies = 0
         self.max_attacking_master_enemies = 1
-        self.master_y_start = 32
         self.lives = 3
         self.score = 0
         self.high_score = 0
@@ -107,7 +106,7 @@ class GamePlay(BaseState):
         self.done = False
         self.wave_count = 0
         self.minion_enemies = 0
-        self.max_minion_enemies = 10
+        self.max_minion_enemies = 12
         self.attacking_minion_enemies = 0
         self.max_attacking_minion_enemies = 3
         self.lives = 3
@@ -138,8 +137,6 @@ class GamePlay(BaseState):
                 if len(self.all_enemies) == self.minion_enemies:
                     self.master_enemies == 0
                     self.add_enemy(EnemyType.MASTER)
-        # elif event.type == constants.LEAVE_ENEMY:
-        #     self.enemy_leave(EnemyType.MASTER)
         elif event.type == constants.DIVE_ENEMY:
             self.enemy_attack()
         elif event.type == constants.ENEMY_FIRES:
@@ -356,6 +353,7 @@ class GamePlay(BaseState):
             surface.blit(self.life_image, (constants.SCREEN_WIDTH - (i * 32 + 16), 20))
 
     def game_over(self):
+        pg.mixer.music.stop()
         self.next_state = "GAME_OVER"
         self.freeze = True
         self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 500)

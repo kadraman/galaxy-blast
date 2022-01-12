@@ -10,6 +10,8 @@ import constants
 class GameOver(BaseState):
     def __init__(self):
         super(GameOver, self).__init__()
+        self.interval = 0
+        self.music_playing = False
         self.active_index = 0
         self.options = ["Restart Game", "Main Menu", "Quit Game", ]
         self.title = self.font.render("Game Over", True, pg.Color("green"))
@@ -32,6 +34,16 @@ class GameOver(BaseState):
         except NameError:
             background = self.default_background
         self.background = background
+
+        if constants.PLAY_SOUNDS:
+            pg.mixer.music.load('./assets/sounds/339837__rocotilos__8-bit-game-over.wav')
+
+    def update(self, dt):
+        if self.interval > 50 and not self.music_playing:
+            pg.mixer.music.play()
+            self.music_playing = True
+        else:
+            self.interval += 1
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")

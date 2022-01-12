@@ -15,6 +15,9 @@ class MinionEnemy(BaseEnemy):
         super(MinionEnemy, self).__init__(enemy_type, sprites, center, x_velocity, y_velocity, number_of_images,
                                           scaled_width, scaled_height)
 
+        self.x_velocity = x_velocity
+        self.y_velocity = y_velocity
+        self.center = center
         self.points = 1
         self.join()
 
@@ -55,7 +58,6 @@ class MinionEnemy(BaseEnemy):
     def enemy_controller_dive(self, dt):
         if self.rect.bottom > (constants.SCREEN_HEIGHT - self.rect.height):
             self.rect.clamp_ip(pg.Rect((self.rect.left, 40), (self.rect.width, self.rect.height)))
-            self.y_velocity = 100
             self.attacking = False
             self.controller_function = self.enemy_controller_pan
         else:

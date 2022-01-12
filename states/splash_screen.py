@@ -15,6 +15,9 @@ class SplashScreen(BaseState):
         self.next_state = "MAIN_MENU"
         self.time_active = 0
 
+        self.intro_sound = pg.mixer.Sound("./assets/sounds/368691__fartbiscuit1700__8-bit-arcade-video-game-start-sound-effect-gun-reload-and-jump.ogg")
+        self.intro_sound.play()
+
     def startup(self, persistent):
         self.persist = persistent
         color = self.persist["screen_color"]
