@@ -40,7 +40,7 @@ class BaseState(object):
     def cleanup(self):
         """
         Called when a state finishes being active.
-        Returns persistent information and resets State.done to False.
+        Returns persistent information and resets self.done to False.
         """
         self.done = False
         return self.persist

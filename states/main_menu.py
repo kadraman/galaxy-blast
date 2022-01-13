@@ -1,5 +1,9 @@
 import pygame as pg
 
+from modules import sprite_sheet
+from sprites.base_enemy import EnemyType
+from sprites.master_enemy import MasterEnemy
+
 from .base_state import BaseState
 
 from modules.display_utils import BackGround
@@ -22,6 +26,10 @@ class MainMenu(BaseState):
         self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
         self.title_rect = self.title.get_rect(center=self.screen_rect.center)
 
+        self.sprites = sprite_sheet.SpriteSheet(constants.SPRITE_SHEET)
+        self.all_sprites = pg.sprite.Group()
+        self.enemy = None
+
     def startup(self, persistent):
         self.active_index = 0
         self.persist = persistent
@@ -39,6 +47,15 @@ class MainMenu(BaseState):
         self.background = background
         self.fancy_text_1 = self.persist["fancy_text_1"]
         self.fancy_text_2 = self.persist["fancy_text_2"]
+
+        self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites,
+                                 center=(0, 240),
+                                 x_velocity=250, y_velocity=0,
+                                 number_of_images=2,
+                                 scaled_width=30, scaled_height=28)
+
+        self.all_sprites = pg.sprite.Group()
+        self.all_sprites.add(self.enemy)
 
         if constants.PLAY_SOUNDS:
             pg.mixer.music.load('./assets/sounds/179511__clinthammer__clinthammermusic-gamerstep-bass-triplets.wav')
@@ -70,6 +87,10 @@ class MainMenu(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
+
+        for entity in self.all_sprites:
+            surface.blit(entity.get_surface(), entity.rect)
+
         self.fancy_text_1.draw(self.screen, constants.AUTHOR, 320, 75)
         self.fancy_text_2.draw(self.screen, constants.TITLE, 320, 150)
 
@@ -79,5 +100,8 @@ class MainMenu(BaseState):
                 text_render, index))
 
     def update(self, dt):
+        for entity in self.all_sprites:
+            entity.update(dt)
+
         self.fancy_text_1.update()
         self.fancy_text_2.update()

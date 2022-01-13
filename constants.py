@@ -2,6 +2,7 @@ import pygame as pg
 
 AUTHOR = "kadraman's"
 TITLE = "Galaxy Blast"
+GAME_OVER = "Game Over"
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 FPS = 30
@@ -11,8 +12,9 @@ DEFAULT_FONT = './assets/fonts/BarcadeBrawlRegular.ttf'
 DEFAULT_FONT_SIZE = 18
 TITLE_FONT = "./assets/fonts/OASIS.TTF"
 TITLE_FONT_SIZE = 48
+GAME_OVER_FONT_SIZE = 32
 DEFAULT_BACKGROUND = './assets/images/stars.png'
-PLAY_SOUNDS = False
+PLAY_SOUNDS = True
 
 # Define some colors
 BLACK = (0, 0, 0)

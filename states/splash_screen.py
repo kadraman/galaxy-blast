@@ -64,7 +64,7 @@ class SplashScreen(BaseState):
     def update(self, dt):
         self.time_active += dt * 1000
         # move to main menu automatically
-        if self.time_active >= 2500:
+        if self.time_active >= 1200:
             self.done = True
         self.fancy_text_1.update()
         self.fancy_text_2.update()

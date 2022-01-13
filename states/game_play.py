@@ -88,6 +88,9 @@ class GamePlay(BaseState):
             background = self.default_background
         self.background = background
 
+        persistent['score'] = self.score
+        persistent['high_score'] = self.high_score
+
         self.player = Player(self.sprites)
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.player)
@@ -109,6 +112,10 @@ class GamePlay(BaseState):
         if constants.PLAY_SOUNDS:
             pg.mixer.music.load('./assets/sounds/251461__joshuaempyre__arcade-music-loop.wav')
             pg.mixer.music.play(-1)
+
+    def cleanup(self):
+        self.persist['score'] = self.score
+        self.persist['high_score'] = self.high_score
 
     def get_event(self, event, controller):
         if event.type == pg.QUIT:
@@ -347,6 +354,7 @@ class GamePlay(BaseState):
 
     def game_over(self):
         pg.mixer.music.stop()
+
         self.next_state = "GAME_OVER"
         self.freeze = True
         self.pixel_explosion = PixelExplosion(self.player.rect.centerx, self.player.rect.centery, 500)

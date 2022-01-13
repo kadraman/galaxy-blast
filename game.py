@@ -42,6 +42,7 @@ class Game(object):
         Switch to the next game state.
         """
         current_state = self.state_name
+        self.state.cleanup()
         next_state = self.state.next_state
         self.state.done = False
         self.state_name = next_state
