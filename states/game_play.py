@@ -1,18 +1,12 @@
 import pygame as pg
 import pygame.sprite
 
-from random import seed, random
 from random import randint
 
 from modules import sprite_sheet
-from modules.display_utils import BackGround
-from modules.sound_utils import SoundEffect
 from modules.starfield import StarField
 from modules.pixel_explosion import PixelExplosion
 from modules.sprite_sheet import SpriteSheet
-from sprites.base_enemy import EnemyType
-from sprites.master_enemy import MasterEnemy
-from sprites.mine import Mine
 
 from .base_state import BaseState
 from sprites.player import Player
@@ -36,8 +30,6 @@ class GamePlay(BaseState):
         pygame.time.set_timer(constants.ADD_MASTER_ENEMY, 12000)
         # send DIVE_ENEMY event every 6000ms
         pygame.time.set_timer(constants.DIVE_ENEMY, 6000)
-        # send LEAVE_ENEMY event every 6000ms
-        # pygame.time.set_timer(constants.LEAVE_ENEMY, 6000)
         # send ENEMY_FIRES event every 1000ms
         pygame.time.set_timer(constants.ENEMY_FIRES, 1000)
 
@@ -120,8 +112,8 @@ class GamePlay(BaseState):
 
     def get_event(self, event, controller):
         if event.type == pg.QUIT:
-            self.next_state = "SPLASH_SCREEN"
-            self.done = True
+            #self.next_state = "SPLASH_SCREEN"
+            self.quit = True
         elif event.type == constants.ADD_MINION_ENEMY:
             if self.minion_enemies < self.max_minion_enemies:
                 self.add_enemy(EnemyType.MINION)
@@ -278,6 +270,7 @@ class GamePlay(BaseState):
                                 number_of_images=2,
                                 scaled_width=30, scaled_height=28)
             self.master_enemies += 1
+
         self.all_enemies.add(enemy)
         self.all_sprites.add(enemy)
 

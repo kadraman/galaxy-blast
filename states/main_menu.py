@@ -14,6 +14,8 @@ class MainMenu(BaseState):
         self.options = ["Start Game", "Settings", "Quit Game"]
         self.next_state = "GAME_PLAY"
 
+        self.fancy_text_1 = None
+        self.fancy_text_2 = None
         self.author = self.default_font.render(constants.AUTHOR, True, pg.Color("blue"))
         self.author_rect = self.author.get_rect(center=self.screen_rect.center)
 
@@ -35,6 +37,8 @@ class MainMenu(BaseState):
         except NameError:
             background = self.default_background
         self.background = background
+        self.fancy_text_1 = self.persist["fancy_text_1"]
+        self.fancy_text_2 = self.persist["fancy_text_2"]
 
         if constants.PLAY_SOUNDS:
             pg.mixer.music.load('./assets/sounds/179511__clinthammer__clinthammermusic-gamerstep-bass-triplets.wav')
@@ -66,10 +70,14 @@ class MainMenu(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
-        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 50))
-        surface.blit(self.title, (constants.SCREEN_WIDTH / 2 - self.title_rect.width / 2, 150))
+        self.fancy_text_1.draw(self.screen, constants.AUTHOR, 320, 75)
+        self.fancy_text_2.draw(self.screen, constants.TITLE, 320, 150)
 
         for index, option in enumerate(self.options):
             text_render = self.render_text(index)
             surface.blit(text_render, self.get_text_position(
                 text_render, index))
+
+    def update(self, dt):
+        self.fancy_text_1.update()
+        self.fancy_text_2.update()

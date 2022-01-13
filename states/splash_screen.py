@@ -2,7 +2,7 @@ import pygame as pg
 
 from .base_state import BaseState
 
-from modules.display_utils import BackGround
+from modules.display_utils import BackGround, FancyText
 
 import constants
 
@@ -15,11 +15,13 @@ class SplashScreen(BaseState):
         self.next_state = "MAIN_MENU"
         self.time_active = 0
 
-        self.author = self.default_font.render(constants.AUTHOR, True, pg.Color("blue"))
-        self.author_rect = self.author.get_rect(center=self.screen_rect.center)
+        self.fancy_text_1 = FancyText(constants.DEFAULT_FONT, constants.DEFAULT_FONT_SIZE, [20, 20, 150])
+        self.fancy_text_1.color_direction = [0, 0, 1]
+        self.fancy_text_1.color_speed = 5
 
-        self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
-        self.title_rect = self.title.get_rect(center=self.screen_rect.center)
+        self.fancy_text_2 = FancyText(constants.TITLE_FONT, constants.TITLE_FONT_SIZE, [20, 150, 20])
+        self.fancy_text_2.color_direction = [0, 1, 0]
+        self.fancy_text_2.color_speed = 5
 
         self.intro_sound = pg.mixer.Sound("./assets/sounds/368691__fartbiscuit1700__8-bit-arcade-video-game-start-sound-effect-gun-reload-and-jump.ogg")
         self.intro_sound.play()
@@ -39,7 +41,10 @@ class SplashScreen(BaseState):
             background = self.default_background
         self.background = background
 
-    def get_event(self, event, joystick):
+        persistent["fancy_text_1"] = self.fancy_text_1
+        persistent["fancy_text_2"] = self.fancy_text_2
+
+    def get_event(self, event, controller):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYUP:
@@ -53,11 +58,13 @@ class SplashScreen(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
-        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 50))
-        surface.blit(self.title, (constants.SCREEN_WIDTH / 2 - self.title_rect.width / 2, 150))
+        self.fancy_text_1.draw(self.screen, constants.AUTHOR, 320, 75)
+        self.fancy_text_2.draw(self.screen, constants.TITLE, 320, 150)
 
     def update(self, dt):
         self.time_active += dt * 1000
         # move to main menu automatically
-        if self.time_active >= 2000:
+        if self.time_active >= 2500:
             self.done = True
+        self.fancy_text_1.update()
+        self.fancy_text_2.update()
