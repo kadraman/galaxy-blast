@@ -12,7 +12,7 @@ DEFAULT_FONT_SIZE = 18
 TITLE_FONT = "./assets/fonts/OASIS.TTF"
 TITLE_FONT_SIZE = 48
 DEFAULT_BACKGROUND = './assets/images/stars.png'
-PLAY_SOUNDS = True
+PLAY_SOUNDS = False
 
 # Define some colors
 BLACK = (0, 0, 0)
