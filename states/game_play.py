@@ -44,7 +44,7 @@ class GamePlay(BaseState):
         self.score_font = pg.font.Font(constants.DEFAULT_FONT, 12)
 
         self.x_velocity = 1
-        self.next_state = "CREDITS"
+        self.next_state = "MAIN_MENU"
         self.sprites = sprite_sheet.SpriteSheet(constants.SPRITE_SHEET)
         self.player = Player(self.sprites)
         self.all_sprites = pg.sprite.Group()
@@ -52,21 +52,28 @@ class GamePlay(BaseState):
         self.all_enemies = pg.sprite.Group()
         self.enemy_missiles = pg.sprite.Group()
         self.enemy_mines = pg.sprite.Group()
-        self.all_bullets = pg.sprite.Group()
+        self.player_missiles = pg.sprite.Group()
 
         life_sprite = SpriteSheet('./assets/images/player-1.png')
         self.life_image = life_sprite.image_at(pg.Rect(0, 0, 16, 16))
 
         self.padding_top = 32
         self.wave_count = 0
-        self.minion_enemies = 0
-        self.max_minion_enemies = 12
+        self.minion_1_enemies = 0
+        self.minion_2_enemies = 0
+        self.minion_1_y_velocity = 100
+        self.minion_2_y_velocity = 100
+        self.max_minion_1_enemies = 12
+        self.max_minion_2_enemies = 10
         self.attacking_minion_enemies = 0
         self.max_attacking_minion_enemies = 3
-        self.minion_y_start = 80
+        self.minion_1_y_start = 40
+        self.minion_2_y_start = 75
         self.master_enemies = 0
         self.attacking_master_enemies = 0
         self.max_attacking_master_enemies = 1
+        self.player_missile_velocity = -250
+        self.enemy_missile_velocity = 100
         self.lives = 3
         self.score = 0
         self.high_score = 0
@@ -94,16 +101,22 @@ class GamePlay(BaseState):
         self.player = Player(self.sprites)
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.player)
-        self.all_bullets = pg.sprite.Group()
+        self.player_missiles = pg.sprite.Group()
         self.all_enemies = pg.sprite.Group()
         self.enemy_missiles = pygame.sprite.Group()
 
         self.done = False
         self.wave_count = 0
-        self.minion_enemies = 0
-        self.max_minion_enemies = 12
+        self.minion_1_enemies = 0
+        self.minion_2_enemies = 0
+        self.minion_1_y_velocity = 100
+        self.minion_2_y_velocity = 100
+        self.max_minion_1_enemies = 12
+        self.max_minion_2_enemies = 10
         self.attacking_minion_enemies = 0
         self.max_attacking_minion_enemies = 3
+        self.player_missile_velocity = -250
+        self.enemy_missile_velocity = 100
         self.lives = 3
         self.score = 0
         self.freeze = False
@@ -119,23 +132,25 @@ class GamePlay(BaseState):
 
     def get_event(self, event, controller):
         if event.type == pg.QUIT:
-            #self.next_state = "SPLASH_SCREEN"
+            # self.next_state = "SPLASH_SCREEN"
             self.quit = True
         elif event.type == constants.ADD_MINION_ENEMY:
-            if self.minion_enemies < self.max_minion_enemies:
-                self.add_enemy(EnemyType.MINION)
+            if self.minion_1_enemies < self.max_minion_1_enemies:
+                self.add_enemy(EnemyType.MINION_1)
+            elif self.minion_2_enemies < self.max_minion_2_enemies:
+                self.add_enemy(EnemyType.MINION_2)
             elif len(self.all_enemies) == 0:
-                self.minion_enemies = 0
+                self.minion_1_enemies = 0
+                self.minion_2_enemies = 0
                 self.master_enemies = 0
                 self.wave_count += 1
+                self.minion_1_y_velocity += 5
+                self.minion_2_y_velocity += 5
+                if self.max_attacking_minion_enemies != self.max_minion_2_enemies:
+                    self.max_attacking_minion_enemies += 1
         elif event.type == constants.ADD_MASTER_ENEMY:
             if self.master_enemies == 0:
                 self.add_enemy(EnemyType.MASTER)
-            else:
-                # hack - if we only have minions, master must have left
-                if len(self.all_enemies) == self.minion_enemies:
-                    self.master_enemies == 0
-                    self.add_enemy(EnemyType.MASTER)
         elif event.type == constants.DIVE_ENEMY:
             self.enemy_attack()
         elif event.type == constants.ENEMY_FIRES:
@@ -163,7 +178,7 @@ class GamePlay(BaseState):
             elif event.key == pg.K_DOWN:
                 self.player.is_moving_down = False
             elif event.key == pg.K_RETURN or event.key == pg.K_SPACE:
-                if len(self.all_bullets) < 2:
+                if len(self.player_missiles) < 2:
                     self.player_fires()
         elif event.type == pg.JOYAXISMOTION:
             if controller.get_axis(0) >= 0.5:
@@ -183,7 +198,7 @@ class GamePlay(BaseState):
             else:
                 self.player.is_moving_down = False
         elif event.type == pg.JOYBUTTONUP:
-            if len(self.all_bullets) < 2:
+            if len(self.player_missiles) < 2:
                 self.player_fires()
 
     def draw(self, surface):
@@ -199,6 +214,11 @@ class GamePlay(BaseState):
             self.pixel_explosion.render(surface)
 
     def update(self, dt):
+        self.master_enemies = 0
+        for entity in self.all_enemies:
+            if entity.enemy_type == EnemyType.MASTER:
+                self.master_enemies = 1
+
         for entity in self.all_sprites:
             entity.update(dt)
 
@@ -212,7 +232,7 @@ class GamePlay(BaseState):
             else:
                 self.interval += 1
         else:
-            result = pg.sprite.groupcollide(self.all_enemies, self.all_bullets, True, True)
+            result = pg.sprite.groupcollide(self.all_enemies, self.player_missiles, True, True)
             if result:
                 for key in result:
                     self.score += key.points
@@ -221,6 +241,8 @@ class GamePlay(BaseState):
                     self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
                     if constants.PLAY_SOUNDS:
                         self.kill_sound.play()
+                    if key.enemy_type == EnemyType.MASTER:
+                        self.master_enemies = 0
 
             result = pygame.sprite.spritecollide(self.player, self.enemy_missiles, True)
             if result:
@@ -256,13 +278,20 @@ class GamePlay(BaseState):
     '''
 
     def add_enemy(self, enemy_type):
-        if enemy_type == EnemyType.MINION:
-            enemy = MinionEnemy(enemy_type, self.sprites,
-                                center=(self.screen_rect.left + 50 + (self.minion_enemies * 50), self.minion_y_start),
-                                x_velocity=100, y_velocity=100,
+        if enemy_type == EnemyType.MINION_1:
+            enemy = MinionEnemy(enemy_type, self.sprites, self.player.rect,
+                                center=(self.screen_rect.left + 50 + (self.minion_1_enemies * 50), self.minion_1_y_start),
+                                x_velocity=100, y_velocity=self.minion_1_y_velocity,
                                 number_of_images=2,
                                 scaled_width=25, scaled_height=25)
-            self.minion_enemies += 1
+            self.minion_1_enemies += 1
+        elif enemy_type == EnemyType.MINION_2:
+            enemy = MinionEnemy(enemy_type, self.sprites, self.player.rect,
+                                center=(self.screen_rect.left + 80 + (self.minion_2_enemies * 50), self.minion_2_y_start),
+                                x_velocity=100, y_velocity=self.minion_2_y_velocity,
+                                number_of_images=2,
+                                scaled_width=25, scaled_height=26)
+            self.minion_2_enemies += 1
         elif enemy_type == EnemyType.MASTER:
             y_start = randint(50, constants.SCREEN_HEIGHT - 100)
             # start on right or left side of screen
@@ -271,7 +300,7 @@ class GamePlay(BaseState):
             if randint(1, 2) == 1:
                 x_start = constants.SCREEN_WIDTH
                 x_velocity = -100
-            enemy = MasterEnemy(enemy_type, self.sprites,
+            enemy = MasterEnemy(enemy_type, self.sprites, self.player.rect,
                                 center=(x_start, y_start),
                                 x_velocity=x_velocity, y_velocity=0,
                                 number_of_images=2,
@@ -283,19 +312,19 @@ class GamePlay(BaseState):
 
     def player_fires(self):
         x_velocity = 0
-        y_velocity = -250
+        y_velocity = self.player_missile_velocity
         missile = Missile(self.sprites, x_velocity, y_velocity, True)
         missile.rect.centerx = self.player.rect.centerx
         missile.rect.centery = self.player.rect.centery
-        self.all_bullets.add(missile)
+        self.player_missiles.add(missile)
         self.all_sprites.add(missile)
         if constants.PLAY_SOUNDS:
             self.shoot_sound.play()
 
-    def enemy_attack(self,):
+    def enemy_attack(self):
         if self.attacking_minion_enemies < self.max_attacking_minion_enemies:
             for entity in self.all_enemies:
-                if not entity.is_attacking() and entity.enemy_type == EnemyType.MINION and randint(0, 2) < 1:
+                if not entity.is_attacking() and entity.enemy_type != EnemyType.MASTER and randint(0, 2) < 1:
                     entity.attack()
 
     def enemy_fires(self):
@@ -308,11 +337,13 @@ class GamePlay(BaseState):
                 # don't fire if master enemy as they lay mines
                 if enemy.enemy_type == EnemyType.MASTER and randint(1, 10) > 5:
                     start_mine = enemy.rect.center
-                elif enemy.enemy_type == EnemyType.MINION and index == enemy_index:
+                elif enemy.enemy_type == EnemyType.MINION_1 and index == enemy_index:
+                    start_missile = enemy.rect.center
+                elif enemy.enemy_type == EnemyType.MINION_2 and index == enemy_index:
                     start_missile = enemy.rect.center
 
             if start_missile and start_missile[1] < constants.SCREEN_HEIGHT:
-                y_velocity = 100
+                y_velocity = self.enemy_missile_velocity
                 dx = self.player.rect.centerx - start_missile[0]
                 dy = self.player.rect.centery - start_missile[1]
 

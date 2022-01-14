@@ -13,7 +13,7 @@ class Game(object):
     and its run method serves as the "game loop".
     """
 
-    def __init__(self, screen, joystick, states, start_state):
+    def __init__(self, screen, controller, states, start_state):
         """
         Initialize the Game object.
 
@@ -23,7 +23,7 @@ class Game(object):
         """
         self.done = False
         self.screen = screen
-        self.joystick = joystick
+        self.controller = controller
         self.clock = pg.time.Clock()
         self.fps = constants.FPS
         self.states = states
@@ -35,7 +35,7 @@ class Game(object):
         Events are passed for handling to the current state.
         """
         for event in pg.event.get():
-            self.state.get_event(event, self.joystick)
+            self.state.get_event(event, self.controller)
 
     def flip_state(self):
         """

@@ -48,7 +48,7 @@ class MainMenu(BaseState):
         self.fancy_text_1 = self.persist["fancy_text_1"]
         self.fancy_text_2 = self.persist["fancy_text_2"]
 
-        self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites,
+        self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites, None,
                                  center=(0, 240),
                                  x_velocity=250, y_velocity=0,
                                  number_of_images=2,
@@ -56,6 +56,9 @@ class MainMenu(BaseState):
 
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.enemy)
+
+        persistent["fancy_text_1"] = self.fancy_text_1
+        persistent["fancy_text_2"] = self.fancy_text_2
 
         if constants.PLAY_SOUNDS:
             pg.mixer.music.load('./assets/sounds/179511__clinthammer__clinthammermusic-gamerstep-bass-triplets.wav')

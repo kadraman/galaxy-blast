@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
 
+from states.display_test import DisplayTest
 from states.splash_screen import SplashScreen
 from states.main_menu import MainMenu
 from states.game_play import GamePlay
@@ -23,9 +24,9 @@ if __name__ == "__main__":
     try:
         joystick = pg.joystick.Joystick(0)
         joystick.init()
-        print("Enabled joystick: {0}".format(joystick.get_name()))
+        print("Enabled controller: {0}".format(joystick.get_name()))
     except pg.error:
-        print("no joystick found.")
+        print("no controllers found.")
     # hide the mouse cursor
     pg.mouse.set_visible(0)
     # set windows title
@@ -40,6 +41,7 @@ if __name__ == "__main__":
         "GAME_OVER": GameOver(),
         "CREDITS": Credits(),
         "SETTINGS": Settings(),
+        "DISPLAY_TEST": DisplayTest(),
         "CONTROLLER_TEST": ControllerTest()
     }
     # start game and set first state to "Splash Screen"

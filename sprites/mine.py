@@ -57,7 +57,7 @@ class Mine(pg.sprite.Sprite):
         # if self.rect.bottom < 0 or self.rect.top > constants.SCREEN_HEIGHT:
         #    self.kill()
 
-    def get_event(self, event, joystick):
+    def get_event(self, event, controller):
         pass
 
     def get_surface(self):

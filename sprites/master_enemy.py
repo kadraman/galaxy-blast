@@ -11,9 +11,9 @@ import constants
 
 
 class MasterEnemy(BaseEnemy):
-    def __init__(self, enemy_type, sprites, center, x_velocity, y_velocity, number_of_images, scaled_width,
+    def __init__(self, enemy_type, sprites, player_rect, center, x_velocity, y_velocity, number_of_images, scaled_width,
                  scaled_height):
-        super(MasterEnemy, self).__init__(enemy_type, sprites, center, x_velocity, y_velocity, number_of_images,
+        super(MasterEnemy, self).__init__(enemy_type, sprites, player_rect, center, x_velocity, y_velocity, number_of_images,
                                           scaled_width, scaled_height)
 
         self.screen_trips = 0
@@ -36,9 +36,9 @@ class MasterEnemy(BaseEnemy):
             return self.images[self.image_index]
 
     def load_images(self):
-        sprites = SpriteSheet('./assets/images/enemy_2_ship-1.png')
+        sprites = SpriteSheet('./assets/images/master_enemy_1_ship-1.png')
         images = sprites.load_strip([0, 0, 15, 14], 1, -1)
-        sprites = SpriteSheet('./assets/images/enemy_2_ship-2.png')
+        sprites = SpriteSheet('./assets/images/master_enemy_1_ship-2.png')
         images.append(sprites.image_at([0, 0, 15, 14], -1))
         return images
 

@@ -36,7 +36,7 @@ class Explosion(pg.sprite.Sprite):
         self.rect = self.surface.get_rect(center=center)
         self.image_index = 0
 
-    def get_event(self, event, joystick):
+    def get_event(self, event, controller):
         pass
 
     def update(self, dt):

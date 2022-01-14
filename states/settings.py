@@ -14,6 +14,14 @@ class Settings(BaseState):
         self.options = ["Display", "Controller", "Main Menu"]
         self.next_state = "MAIN_MENU"
 
+        self.fancy_text_1 = None
+        self.fancy_text_2 = None
+        self.author = self.default_font.render(constants.AUTHOR, True, pg.Color("blue"))
+        self.author_rect = self.author.get_rect(center=self.screen_rect.center)
+
+        self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
+        self.title_rect = self.title.get_rect(center=self.screen_rect.center)
+
     def startup(self, persistent):
         self.active_index = 0
         self.persist = persistent
@@ -29,6 +37,8 @@ class Settings(BaseState):
         except NameError:
             background = self.default_background
         self.background = background
+        self.fancy_text_1 = self.persist["fancy_text_1"]
+        self.fancy_text_2 = self.persist["fancy_text_2"]
 
     def render_text(self, index):
         color = pg.Color("red") if index == self.active_index else pg.Color("white")
@@ -41,7 +51,8 @@ class Settings(BaseState):
 
     def handle_action(self):
         if self.active_index == 0:
-            print("Display Test")
+            self.next_state = "DISPLAY_TEST"
+            self.done = True
         elif self.active_index == 1:
             self.next_state = "CONTROLLER_TEST"
             self.done = True
@@ -56,9 +67,15 @@ class Settings(BaseState):
         background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
         surface.fill(self.screen_color)
         surface.blit(background.image, background.rect)
-        surface.blit(self.author, (constants.SCREEN_WIDTH / 2 - self.author_rect.width / 2, 150))
-        surface.blit(self.title_logo, self.title_logo_rect)
+
+        self.fancy_text_1.draw(self.screen, constants.AUTHOR, 320, 75)
+        self.fancy_text_2.draw(self.screen, constants.TITLE, 320, 150)
+
         for index, option in enumerate(self.options):
             text_render = self.render_text(index)
             surface.blit(text_render, self.get_text_position(
                 text_render, index))
+
+    def update(self, dt):
+        self.fancy_text_1.update()
+        self.fancy_text_2.update()

@@ -14,7 +14,7 @@ TITLE_FONT = "./assets/fonts/OASIS.TTF"
 TITLE_FONT_SIZE = 48
 GAME_OVER_FONT_SIZE = 32
 DEFAULT_BACKGROUND = './assets/images/stars.png'
-PLAY_SOUNDS = True
+PLAY_SOUNDS = False
 
 # Define some colors
 BLACK = (0, 0, 0)
