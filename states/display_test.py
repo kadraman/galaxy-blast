@@ -49,9 +49,6 @@ class DisplayTest(BaseState):
                 self.done = True
 
     def draw(self, surface):
-        # background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
-        # surface.fill([255, 255, 255])
-        # surface.blit(background.image, background.rect)
         surface.fill(self.screen_color)
 
         tp = TextPrint()

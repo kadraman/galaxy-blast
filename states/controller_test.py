@@ -70,9 +70,6 @@ class ControllerTest(BaseState):
             self.messages.put('Joystick %d, button: %d released' % (event.joy, event.button))
 
     def draw(self, surface):
-        # background = BackGround(constants.DEFAULT_BACKGROUND, [0, 0])
-        # surface.fill([255, 255, 255])
-        # surface.blit(background.image, background.rect)
         surface.fill(self.screen_color)
 
         tp = TextPrint()

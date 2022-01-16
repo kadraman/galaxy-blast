@@ -18,6 +18,7 @@ class MasterEnemy(BaseEnemy):
 
         self.screen_trips = 0
         self.max_screen_trips = 1
+        self.placed_mine = False
         self.points = 10
         self.join()
 

@@ -1,10 +1,6 @@
 import random
 import math
 
-# the size of the screen
-WIDTH = 800
-HEIGHT = 600
-
 # how much a particle slows down by each second
 DRAG = 0.8
 

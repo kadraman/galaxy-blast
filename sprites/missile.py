@@ -46,10 +46,6 @@ class Missile(pg.sprite.Sprite):
 
     def update(self, dt):
         self.timer += 1
-        # if self.timer % self.interval == 0:
-        #     self.image_index += 1
-        # if self.image_index >= self.number_of_images:
-        #     self.image_index = 0
         if self.is_player_missile:
             self.image_index = 0
         else:

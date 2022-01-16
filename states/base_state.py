@@ -30,10 +30,9 @@ class BaseState(object):
 
     def startup(self, persistent):
         """
-        Called when a state resumes being active.
-        Allows information to be passed between states.
-
-        persistent: a dict passed from state to state
+        Called when a state starts or resumes being active
+        Allows information to be passed between states
+        :param persistent: a dict passed from state to state
         """
         self.persist = persistent
 
@@ -47,35 +46,36 @@ class BaseState(object):
 
     def get_event(self, event, controller):
         """
-        Handle a single event passed by the Game object.
+        Handle a single event passed by the Game object
+        :param event: the event object to check
+        :param controller: additional joystick/controller object to check
         """
         pass
 
     def update(self, dt):
         """
-        Update the state. Called by the Game object once per frame.
-
-        dt: time since last frame
+        Update the state. Called by the Game object once per frame
+        :param dt: time since last frame
         """
         pass
 
     def draw(self, surface):
         """
-        Draw everything to the screen.
+        Draw everything to the screen
+        :param surface: the display surface/screen
         """
 
     def handle_action(self):
         """
         Handle the menu item selected
-        :return:
         """
         pass
 
     def menu_choice(self, event, controller):
         """
         Use various input devices to navigate a menu
-        :param event:
-        :param controller:
+        :param event: the event object to check
+        :param controller: additional joystick/controller object to check
         """
         if event.type == pg.QUIT:
             self.quit = True
@@ -98,5 +98,3 @@ class BaseState(object):
         elif event.type == pg.JOYBUTTONDOWN:
             self.handle_action()
 
-    def weird_division(self, n, d):
-        return n / d if d else 0

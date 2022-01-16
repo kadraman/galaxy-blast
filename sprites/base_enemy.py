@@ -6,12 +6,13 @@ import constants
 class EnemyType:
     MINION_1 = 1
     MINION_2 = 2
-    MASTER = 3
-    BOSS = 4
+    MINION_3 = 3
+    MASTER = 4
+    BOSS = 5
 
 
 class BaseEnemy(pg.sprite.Sprite):
-    def __init__(self, enemy_type, sprites, player_center, center, x_velocity, y_velocity, number_of_images, scaled_width, scaled_height):
+    def __init__(self, enemy_type, sprites, player_center, enemy_center, x_velocity, y_velocity, number_of_images, scaled_width, scaled_height):
         super(BaseEnemy, self).__init__()
         self.enemy_type = enemy_type
         self.timer = 0
@@ -33,7 +34,7 @@ class BaseEnemy(pg.sprite.Sprite):
 
         self.base_image = self.images[0]
         self.surface = self.images[0]
-        self.rect = self.surface.get_rect(center=center)
+        self.rect = self.surface.get_rect(center=enemy_center)
         self.image_index = 0
         self.screen_rect = pg.display.get_surface().get_rect()
 
@@ -85,6 +86,3 @@ class BaseEnemy(pg.sprite.Sprite):
     def enemy_controller_static(self, dt):
         # do nothing
         return
-
-    def weird_division(self, n, d):
-        return n / d if d else 0

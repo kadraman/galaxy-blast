@@ -5,7 +5,6 @@ from states.display_test import DisplayTest
 from states.splash_screen import SplashScreen
 from states.main_menu import MainMenu
 from states.game_play import GamePlay
-from states.credits import Credits
 from states.game_over import GameOver
 from states.settings import Settings
 from states.controller_test import ControllerTest
@@ -39,7 +38,6 @@ if __name__ == "__main__":
         "MAIN_MENU": MainMenu(),
         "GAME_PLAY": GamePlay(),
         "GAME_OVER": GameOver(),
-        "CREDITS": Credits(),
         "SETTINGS": Settings(),
         "DISPLAY_TEST": DisplayTest(),
         "CONTROLLER_TEST": ControllerTest()
