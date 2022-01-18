@@ -7,34 +7,33 @@ import constants
 
 
 class Missile(pg.sprite.Sprite):
-    def __init__(self, sprites, x_velocity, y_velocity, is_player_missile):
+    def __init__(self, sprites, x_velocity, y_velocity, is_player_missile, is_boss_missile):
         super(Missile, self).__init__()
-        self.timer = 0
-        self.interval = 2
+        self.sprites = sprites
         self.x_velocity = x_velocity
         self.y_velocity = y_velocity
         self.is_player_missile = is_player_missile
+        self.is_boss_missile = is_boss_missile
+        self.timer = 0
+        self.interval = 5
 
-        self.number_of_images = 2
-        sprites = SpriteSheet('./assets/images/missile-1.png')
-        self.images = sprites.load_strip([0, 0, 5, 16], 1, -1)
-        sprites = SpriteSheet('./assets/images/missile-2.png')
-        self.images.append(sprites.image_at([0, 0, 5, 16], -1))
-        sprites = SpriteSheet('./assets/images/missile-3.png')
-        self.images.append(sprites.image_at([0, 0, 5, 16], -1))
-
-        '''
-        self.images = sprites.load_strip([
-            constants.SS_MISSILE_X,
-            constants.SS_MISSILE_Y,
-            constants.SS_MISSILE_WIDTH,
-            constants.SS_MISSILE_HEIGHT], self.number_of_images, -1)
-        '''
+        self.images = self.sprites.load_strip([constants.SS_MISSILE_X_1,
+                                               constants.SS_MISSILE_Y_1,
+                                               constants.SS_MISSILE_WIDTH,
+                                               constants.SS_MISSILE_HEIGHT], 1, -1)
+        self.images.append(self.sprites.image_at([constants.SS_MISSILE_X_2,
+                                                  constants.SS_MISSILE_Y_2,
+                                                  constants.SS_MISSILE_WIDTH,
+                                                  constants.SS_MISSILE_HEIGHT], -1))
+        self.images.append(self.sprites.image_at([constants.SS_MISSILE_X_3,
+                                                  constants.SS_MISSILE_Y_3,
+                                                  constants.SS_MISSILE_WIDTH,
+                                                  constants.SS_MISSILE_HEIGHT], -1))
 
         # scale image for enhanced retro effect!
-        # for index, image in enumerate(self.images):
-        #     self.images[index] = pg.transform.scale(image, (5, 20))
-        # self.base_image = self.images[0]
+        for index, image in enumerate(self.images):
+            self.images[index] = pg.transform.scale(image, (constants.MISSILE_WIDTH, constants.MISSILE_HEIGHT))
+        self.base_image = self.images[0]
 
         self.surface = self.images[0]
         self.rect = self.surface.get_rect(
@@ -50,8 +49,10 @@ class Missile(pg.sprite.Sprite):
         self.timer += 1
         if self.is_player_missile:
             self.image_index = 0
-        else:
+        elif self.is_boss_missile:
             self.image_index = 1
+        else:
+            self.image_index = 2
         self.rect.move_ip(self.x_velocity * dt, self.y_velocity * dt)
 
         if self.rect.bottom < 0 or self.rect.top > constants.SCREEN_HEIGHT:

@@ -13,9 +13,8 @@ import constants
 class MasterEnemy(BaseEnemy):
     def __init__(self, enemy_type, sprites, player_rect, center, x_velocity, y_velocity, number_of_images, scaled_width,
                  scaled_height):
-        super(MasterEnemy, self).__init__(enemy_type, sprites, player_rect, center, x_velocity, y_velocity, number_of_images,
-                                          scaled_width, scaled_height)
-        print(sprites)
+        super(MasterEnemy, self).__init__(enemy_type, sprites, player_rect, center, x_velocity, y_velocity,
+                                          number_of_images, scaled_width, scaled_height)
         self.screen_trips = 0
         self.max_screen_trips = 1
         self.placed_mine = False
@@ -30,23 +29,25 @@ class MasterEnemy(BaseEnemy):
     def get_surface(self):
         if self.joining:
             return pg.transform.scale(self.images[self.image_index],
-                                      (int(constants.MASTER_ENEMY_WIDTH * (self.join_count / 3)),
-                                       int(constants.MASTER_ENEMY_HEIGHT * (self.join_count / 3))))
+                                      (int(self.scaled_width * (self.join_count / 5)),
+                                       int(self.scaled_height * (self.join_count / 5))))
         else:
             return self.images[self.image_index]
 
     def load_images(self):
-        print("master_enemy::load_images")
-        print(self.sprites)
-        # sprites = SpriteSheet('./assets/images/master_enemy_1_ship-1.png')
-        images = self.sprites.load_strip([227, 1, 15, 14], 1, -1)
-        # sprites = SpriteSheet('./assets/images/master_enemy_1_ship-2.png')
-        images.append(self.sprites.image_at([244, 1, 15, 14], -1))
+        images = self.sprites.load_strip([constants.SS_MASTER_ENEMY_X_1,
+                                          constants.SS_MASTER_ENEMY_Y_1,
+                                          constants.SS_MASTER_ENEMY_WIDTH,
+                                          constants.SS_MASTER_ENEMY_HEIGHT], 1, -1)
+        images.append(self.sprites.image_at([constants.SS_MASTER_ENEMY_X_2,
+                                            constants.SS_MASTER_ENEMY_Y_2,
+                                            constants.SS_MASTER_ENEMY_WIDTH,
+                                            constants.SS_MASTER_ENEMY_HEIGHT], -1))
         return images
 
     def enemy_controller_join(self, dt):
         self.join_count += 1
-        if self.join_count > 1:
+        if self.join_count > 3:
             self.joining = False
             self.controller_function = self.enemy_controller_pan
         else:
@@ -61,6 +62,7 @@ class MasterEnemy(BaseEnemy):
         if self.rect.left <= 0 and self.x_velocity < 0:
             self.x_velocity *= -1
             self.screen_trips += 1
+        # finished screen round trips ?
         if self.screen_trips >= self.max_screen_trips:
             self.kill()
         else:

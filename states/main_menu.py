@@ -39,7 +39,8 @@ class MainMenu(BaseState):
                                  center=(0, 240),
                                  x_velocity=150, y_velocity=0,
                                  number_of_images=2,
-                                 scaled_width=30, scaled_height=28)
+                                 scaled_width=constants.MASTER_ENEMY_WIDTH*2,
+                                 scaled_height=constants.MASTER_ENEMY_HEIGHT*2)
 
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.enemy)

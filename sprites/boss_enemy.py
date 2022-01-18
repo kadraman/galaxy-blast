@@ -32,16 +32,20 @@ class BossEnemy(BaseEnemy):
     def get_surface(self):
         if self.joining:
             return pg.transform.scale(self.images[self.image_index],
-                                      (int(constants.BOSS_ENEMY_WIDTH * (self.join_count / 3)),
-                                       int(constants.BOSS_ENEMY_HEIGHT * (self.join_count / 3))))
+                                      (int(self.scaled_width * (self.join_count / 5)),
+                                       int(self.scaled_height * (self.join_count / 5))))
         else:
             return self.images[self.image_index]
 
     def load_images(self):
-        sprites = SpriteSheet('./assets/images/boss_enemy_ship-1.png')
-        images = sprites.load_strip([0, 0, 20, 20], 1, -1)
-        sprites = SpriteSheet('./assets/images/boss_enemy_ship-2.png')
-        images.append(sprites.image_at([0, 0, 20, 20], -1))
+        images = self.sprites.load_strip([constants.SS_BOSS_ENEMY_X_1,
+                                          constants.SS_BOSS_ENEMY_Y_1,
+                                          constants.SS_BOSS_ENEMY_WIDTH,
+                                          constants.SS_BOSS_ENEMY_HEIGHT], 1, -1)
+        images.append(self.sprites.image_at([constants.SS_BOSS_ENEMY_X_2,
+                                             constants.SS_BOSS_ENEMY_Y_2,
+                                             constants.SS_BOSS_ENEMY_WIDTH,
+                                             constants.SS_BOSS_ENEMY_HEIGHT], -1))
         return images
 
     def enemy_controller_join(self, dt):
@@ -61,6 +65,7 @@ class BossEnemy(BaseEnemy):
         if self.rect.left <= 0 and self.x_velocity < 0:
             self.x_velocity *= -1
             self.screen_trips += 1
+        # finished screen round trips ?
         if self.screen_trips >= self.max_screen_trips:
             self.kill()
         else:

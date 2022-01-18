@@ -12,7 +12,8 @@ class EnemyType:
 
 
 class BaseEnemy(pg.sprite.Sprite):
-    def __init__(self, enemy_type, sprites, player_center, enemy_center, x_velocity, y_velocity, number_of_images, scaled_width, scaled_height):
+    def __init__(self, enemy_type, sprites, player_center, enemy_center, x_velocity, y_velocity, number_of_images,
+                 scaled_width, scaled_height):
         super(BaseEnemy, self).__init__()
         self.sprites = sprites
         self.enemy_type = enemy_type
@@ -50,7 +51,6 @@ class BaseEnemy(pg.sprite.Sprite):
             self.image_index += 1
         if self.image_index >= self.number_of_images:
             self.image_index = 0
-
         self.controller_function(dt)
 
     def get_surface(self):

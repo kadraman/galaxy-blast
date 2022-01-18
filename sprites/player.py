@@ -5,32 +5,33 @@ from modules.sprite_sheet import SpriteSheet
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, sprites):
+    def __init__(self, sprites, velocity, scaled_width, scaled_height):
         super(Player, self).__init__()
+        self.sprites = sprites
+        self.velocity = velocity
+        self.scaled_width = scaled_width
+        self.scaled_height = scaled_height
         self.timer = 0
-        self.interval = 2
-        self.velocity = 100
+        self.interval = 5
+        # self.velocity = 100
 
         self.number_of_images = 3
-        sprites = SpriteSheet('./assets/images/player_ship-1.png')
-        self.images = sprites.load_strip([0, 0, 16, 20], 1, -1)
-        sprites = SpriteSheet('./assets/images/player_ship-2.png')
-        self.images.append(sprites.image_at([0, 0, 16, 20], -1))
-        sprites = SpriteSheet('./assets/images/player_ship-3.png')
-        self.images.append(sprites.image_at([0, 0, 16, 20], -1))
-
-        '''
-        self.number_of_images = constants.SS_PLAYER_IMAGES
-        self.images = sprites.load_strip([
-            constants.SS_PLAYER_X,
-            constants.SS_PLAYER_Y,
-            constants.SS_PLAYER_WIDTH,
-            constants.SS_PLAYER_HEIGHT], self.number_of_images, -1)
-        '''
+        self.images = self.sprites.load_strip([constants.SS_PLAYER_X_1,
+                                               constants.SS_PLAYER_Y_1,
+                                               constants.SS_PLAYER_WIDTH,
+                                               constants.SS_PLAYER_HEIGHT], 1, -1)
+        self.images.append(self.sprites.image_at([constants.SS_PLAYER_X_2,
+                                                  constants.SS_PLAYER_Y_2,
+                                                  constants.SS_PLAYER_WIDTH,
+                                                  constants.SS_PLAYER_HEIGHT], -1))
+        self.images.append(self.sprites.image_at([constants.SS_PLAYER_X_3,
+                                                  constants.SS_PLAYER_Y_3,
+                                                  constants.SS_PLAYER_WIDTH,
+                                                  constants.SS_PLAYER_HEIGHT], -1))
 
         # scale image for enhanced retro effect!
         for index, image in enumerate(self.images):
-            self.images[index] = pg.transform.scale(image, (32, 32))
+            self.images[index] = pg.transform.scale(image, (self.scaled_width, self.scaled_height))
 
         self.surface = self.images[0]
         self.rect = self.surface.get_rect(center=(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 40))

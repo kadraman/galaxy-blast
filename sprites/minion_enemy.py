@@ -20,6 +20,8 @@ class MinionEnemy(BaseEnemy):
         self.y_start = enemy_center[1]
         self.x_velocity = x_velocity
         self.y_velocity = y_velocity
+        self.scaled_width = scaled_width
+        self.scaled_height = scaled_height
         self.original_y_velocity = y_velocity
         if enemy_type == EnemyType.MINION_1:
             self.points = 1
@@ -45,26 +47,36 @@ class MinionEnemy(BaseEnemy):
             image = self.images[self.image_index + 4]
         if self.joining:
             return pg.transform.scale(image,
-                                      (int(constants.MINION_ENEMY_WIDTH * (self.join_count / 3)),
-                                       int(constants.MINION_ENEMY_HEIGHT * (self.join_count / 3))))
+                                      (int(self.scaled_width * (self.join_count / 5)),
+                                       int(self.scaled_height * (self.join_count / 5))))
         else:
             return image
 
     def load_images(self):
-        sprites = SpriteSheet('./assets/images/enemy_1_ship-2.png')
-        images = sprites.load_strip([0, 0, 10, 10], 1, -1)
-        sprites = SpriteSheet('./assets/images/enemy_1_ship-1.png')
-        images.append(sprites.image_at([0, 0, 10, 10], -1))
-
-        sprites = SpriteSheet('./assets/images/enemy_2_ship-2.png')
-        images.append(sprites.image_at([0, 0, 10, 11], 1))
-        sprites = SpriteSheet('./assets/images/enemy_2_ship-1.png')
-        images.append(sprites.image_at([0, 0, 10, 11], -1))
-
-        sprites = SpriteSheet('./assets/images/enemy_3_ship-2.png')
-        images.append(sprites.image_at([0, 0, 13, 8], 1))
-        sprites = SpriteSheet('./assets/images/enemy_3_ship-1.png')
-        images.append(sprites.image_at([0, 0, 13, 8], -1))
+        images = self.sprites.load_strip([constants.SS_ENEMY1_X_1,
+                                          constants.SS_ENEMY1_Y_1,
+                                          constants.SS_ENEMY1_WIDTH,
+                                          constants.SS_ENEMY1_HEIGHT], 1, -1)
+        images.append(self.sprites.image_at([constants.SS_ENEMY1_X_2,
+                                             constants.SS_ENEMY1_Y_2,
+                                             constants.SS_ENEMY1_WIDTH,
+                                             constants.SS_ENEMY1_HEIGHT], -1))
+        images.append(self.sprites.image_at([constants.SS_ENEMY2_X_1,
+                                             constants.SS_ENEMY2_Y_1,
+                                             constants.SS_ENEMY2_WIDTH,
+                                             constants.SS_ENEMY2_HEIGHT], -1))
+        images.append(self.sprites.image_at([constants.SS_ENEMY2_X_2,
+                                             constants.SS_ENEMY2_Y_2,
+                                             constants.SS_ENEMY2_WIDTH,
+                                             constants.SS_ENEMY2_HEIGHT], -1))
+        images.append(self.sprites.image_at([constants.SS_ENEMY3_X_1,
+                                             constants.SS_ENEMY3_Y_1,
+                                             constants.SS_ENEMY3_WIDTH,
+                                             constants.SS_ENEMY3_HEIGHT], -1))
+        images.append(self.sprites.image_at([constants.SS_ENEMY3_X_2,
+                                             constants.SS_ENEMY3_Y_2,
+                                             constants.SS_ENEMY3_WIDTH,
+                                             constants.SS_ENEMY3_HEIGHT], -1))
         return images
 
     def enemy_controller_join(self, dt):

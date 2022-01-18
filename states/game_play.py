@@ -49,8 +49,9 @@ class GamePlay(BaseState):
 
         self.x_velocity = 1
         self.next_state = "MAIN_MENU"
+        self.player_velocity = 100
         self.sprites = sprite_sheet.SpriteSheet(constants.SPRITE_SHEET)
-        self.player = Player(self.sprites)
+        self.player = Player(self.sprites, self.player_velocity, constants.PLAYER_WIDTH, constants.PLAYER_HEIGHT)
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.player)
         self.all_enemies = pg.sprite.Group()
@@ -108,7 +109,7 @@ class GamePlay(BaseState):
         persistent['score'] = self.score
         persistent['high_score'] = self.high_score
 
-        self.player = Player(self.sprites)
+        self.player = Player(self.sprites, self.player_velocity, constants.PLAYER_WIDTH, constants.PLAYER_HEIGHT)
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.player)
         self.player_missiles = pg.sprite.Group()
@@ -306,24 +307,27 @@ class GamePlay(BaseState):
     def add_enemy(self, enemy_type):
         if enemy_type == EnemyType.MINION_1:
             enemy = MinionEnemy(enemy_type, self.sprites, self.player.rect,
-                                enemy_center=(self.screen_rect.left + 50 + (self.minion_1_enemies * 50), self.minion_1_y_start),
+                                enemy_center=(
+                                    self.screen_rect.left + 50 + (self.minion_1_enemies * 50), self.minion_1_y_start),
                                 x_velocity=100, y_velocity=self.minion_1_y_velocity,
-                                number_of_images=2,
-                                scaled_width=25, scaled_height=25)
+                                number_of_images=constants.SS_ENEMY1_IMAGES,
+                                scaled_width=constants.ENEMY1_WIDTH, scaled_height=constants.ENEMY2_HEIGHT)
             self.minion_1_enemies += 1
         elif enemy_type == EnemyType.MINION_2:
             enemy = MinionEnemy(enemy_type, self.sprites, self.player.rect,
-                                enemy_center=(self.screen_rect.left + 80 + (self.minion_2_enemies * 50), self.minion_2_y_start),
+                                enemy_center=(
+                                    self.screen_rect.left + 80 + (self.minion_2_enemies * 50), self.minion_2_y_start),
                                 x_velocity=100, y_velocity=self.minion_2_y_velocity,
-                                number_of_images=2,
-                                scaled_width=25, scaled_height=26)
+                                number_of_images=constants.SS_ENEMY2_IMAGES,
+                                scaled_width=constants.ENEMY2_WIDTH, scaled_height=constants.ENEMY2_HEIGHT)
             self.minion_2_enemies += 1
         elif enemy_type == EnemyType.MINION_3:
             enemy = MinionEnemy(enemy_type, self.sprites, self.player.rect,
-                            enemy_center=(self.screen_rect.left + 110 + (self.minion_3_enemies * 50), self.minion_3_y_start),
-                            x_velocity=100, y_velocity=self.minion_3_y_velocity,
-                            number_of_images=2,
-                            scaled_width=24, scaled_height=20)
+                                enemy_center=(
+                                    self.screen_rect.left + 110 + (self.minion_3_enemies * 50), self.minion_3_y_start),
+                                x_velocity=100, y_velocity=self.minion_3_y_velocity,
+                                number_of_images=constants.SS_ENEMY3_IMAGES,
+                                scaled_width=constants.ENEMY3_WIDTH, scaled_height=constants.ENEMY3_HEIGHT)
             self.minion_3_enemies += 1
         elif enemy_type == EnemyType.MASTER:
             y_start = randint(140, constants.SCREEN_HEIGHT - 100)
@@ -336,18 +340,18 @@ class GamePlay(BaseState):
             enemy = MasterEnemy(enemy_type, self.sprites, self.player.rect,
                                 center=(x_start, y_start),
                                 x_velocity=x_velocity, y_velocity=0,
-                                number_of_images=2,
-                                scaled_width=30, scaled_height=28)
+                                number_of_images=constants.SS_MASTER_ENEMY_IMAGES,
+                                scaled_width=constants.MASTER_ENEMY_WIDTH, scaled_height=constants.MASTER_ENEMY_HEIGHT)
             self.master_enemies += 1
         elif enemy_type == EnemyType.BOSS:
             y_start = 180
             x_start = 320
             x_velocity = 200
             enemy = BossEnemy(enemy_type, self.sprites, self.player.rect,
-                                center=(x_start, y_start),
-                                x_velocity=x_velocity, y_velocity=0,
-                                number_of_images=2,
-                                scaled_width=60, scaled_height=60)
+                              center=(x_start, y_start),
+                              x_velocity=x_velocity, y_velocity=0,
+                              number_of_images=constants.SS_BOSS_ENEMY_IMAGES,
+                              scaled_width=constants.BOSS_ENEMY_WIDTH, scaled_height=constants.BOSS_ENEMY_HEIGHT)
             self.boss_enemies += 1
 
         self.all_enemies.add(enemy)
@@ -356,7 +360,7 @@ class GamePlay(BaseState):
     def player_fires(self):
         x_velocity = 0
         y_velocity = self.player_missile_velocity
-        missile = Missile(self.sprites, x_velocity, y_velocity, True)
+        missile = Missile(self.sprites, x_velocity, y_velocity, True, False)
         missile.rect.centerx = self.player.rect.centerx
         missile.rect.centery = self.player.rect.centery
         self.player_missiles.add(missile)
@@ -400,7 +404,7 @@ class GamePlay(BaseState):
                 number_of_steps = safe_division(dy, y_velocity)
                 x_velocity = safe_division(dx, number_of_steps)
 
-                missile = Missile(self.sprites, x_velocity, y_velocity, False)
+                missile = Missile(self.sprites, x_velocity, y_velocity, False, False)
                 missile.rect.centerx = start_missile[0]
                 missile.rect.centery = start_missile[1]
 
@@ -409,7 +413,7 @@ class GamePlay(BaseState):
 
             if start_mine and 50 < start_mine[0] < constants.SCREEN_WIDTH - 50:
                 if constants.SCREEN_HEIGHT - 50 > start_mine[1] > 50:
-                    mine = Mine(self.sprites, 0, 0)
+                    mine = Mine(self.sprites, 0, 0, constants.MINE_WIDTH, constants.MINE_HEIGHT)
                     mine.rect.centerx = start_mine[0]
                     mine.rect.centery = start_mine[1]
 
@@ -420,7 +424,7 @@ class GamePlay(BaseState):
                 for i in range(3):
                     y_velocity = 250
 
-                    missile = Missile(self.sprites, 0, y_velocity, False)
+                    missile = Missile(self.sprites, 0, y_velocity, False, True)
                     missile.rect.centerx = start_beam[0]
                     missile.rect.centery = start_beam[1] + (20 * i)
 
@@ -453,7 +457,7 @@ class GamePlay(BaseState):
         self.master_enemies = 0
         self.boss_enemies = 0
         self.wave_count += 1
-        self.minion_1_y_velocity += 0   # does not dive
+        self.minion_1_y_velocity += 0  # does not dive
         self.minion_2_y_velocity += 5
         self.minion_3_y_velocity += 5
         if self.max_attacking_minion_enemies != (self.max_minion_2_enemies + self.max_minion_3_enemies):
