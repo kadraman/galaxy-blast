@@ -26,31 +26,18 @@ class MainMenu(BaseState):
         self.title = self.title_font.render(constants.TITLE, True, pg.Color("green"))
         self.title_rect = self.title.get_rect(center=self.screen_rect.center)
 
-        self.sprites = sprite_sheet.SpriteSheet(constants.SPRITE_SHEET)
         self.all_sprites = pg.sprite.Group()
         self.enemy = None
 
     def startup(self, persistent):
         self.active_index = 0
         self.persist = persistent
-        color = self.persist["screen_color"]
-        try:
-            color
-        except NameError:
-            color = self.default_screen_color
-        self.screen_color = color
-        background = self.persist["background"]
-        try:
-            background
-        except NameError:
-            background = self.default_background
-        self.background = background
         self.fancy_text_1 = self.persist["fancy_text_1"]
         self.fancy_text_2 = self.persist["fancy_text_2"]
 
         self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites, None,
                                  center=(0, 240),
-                                 x_velocity=250, y_velocity=0,
+                                 x_velocity=150, y_velocity=0,
                                  number_of_images=2,
                                  scaled_width=30, scaled_height=28)
 

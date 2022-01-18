@@ -14,9 +14,10 @@ class EnemyType:
 class BaseEnemy(pg.sprite.Sprite):
     def __init__(self, enemy_type, sprites, player_center, enemy_center, x_velocity, y_velocity, number_of_images, scaled_width, scaled_height):
         super(BaseEnemy, self).__init__()
+        self.sprites = sprites
         self.enemy_type = enemy_type
         self.timer = 0
-        self.interval = 2
+        self.interval = 5
         self.join_count = 1
         self.x_velocity = x_velocity
         self.y_velocity = y_velocity

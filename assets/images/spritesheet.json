@@ -1,0 +1,435 @@
+{
+	"frames": {
+		"boss_enemy_ship-1.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 20,
+				"h": 20
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"sourceSize": {
+				"w": 20,
+				"h": 20
+			}
+		},
+		"boss_enemy_ship-2.png": {
+			"frame": {
+				"x": 23,
+				"y": 1,
+				"w": 20,
+				"h": 20
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"sourceSize": {
+				"w": 20,
+				"h": 20
+			}
+		},
+		"enemy_1_ship-1.png": {
+			"frame": {
+				"x": 45,
+				"y": 1,
+				"w": 10,
+				"h": 10
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 10,
+				"h": 10
+			},
+			"sourceSize": {
+				"w": 10,
+				"h": 10
+			}
+		},
+		"enemy_1_ship-2.png": {
+			"frame": {
+				"x": 57,
+				"y": 1,
+				"w": 10,
+				"h": 10
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 10,
+				"h": 10
+			},
+			"sourceSize": {
+				"w": 10,
+				"h": 10
+			}
+		},
+		"enemy_2_ship-1.png": {
+			"frame": {
+				"x": 69,
+				"y": 1,
+				"w": 11,
+				"h": 10
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 11,
+				"h": 10
+			},
+			"sourceSize": {
+				"w": 11,
+				"h": 10
+			}
+		},
+		"enemy_2_ship-2.png": {
+			"frame": {
+				"x": 82,
+				"y": 1,
+				"w": 11,
+				"h": 10
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 11,
+				"h": 10
+			},
+			"sourceSize": {
+				"w": 11,
+				"h": 10
+			}
+		},
+		"enemy_3_ship-1.png": {
+			"frame": {
+				"x": 95,
+				"y": 1,
+				"w": 13,
+				"h": 8
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 13,
+				"h": 8
+			},
+			"sourceSize": {
+				"w": 13,
+				"h": 8
+			}
+		},
+		"enemy_3_ship-2.png": {
+			"frame": {
+				"x": 110,
+				"y": 1,
+				"w": 13,
+				"h": 8
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 13,
+				"h": 8
+			},
+			"sourceSize": {
+				"w": 13,
+				"h": 8
+			}
+		},
+		"explosion-1.png": {
+			"frame": {
+				"x": 125,
+				"y": 1,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			},
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			}
+		},
+		"explosion-2.png": {
+			"frame": {
+				"x": 159,
+				"y": 1,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			},
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			}
+		},
+		"explosion-3.png": {
+			"frame": {
+				"x": 193,
+				"y": 1,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			},
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			}
+		},
+		"master_enemy_1_ship-1.png": {
+			"frame": {
+				"x": 227,
+				"y": 1,
+				"w": 15,
+				"h": 14
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 14
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 14
+			}
+		},
+		"master_enemy_1_ship-2.png": {
+			"frame": {
+				"x": 244,
+				"y": 1,
+				"w": 15,
+				"h": 14
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 14
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 14
+			}
+		},
+		"mine-1.png": {
+			"frame": {
+				"x": 261,
+				"y": 1,
+				"w": 11,
+				"h": 11
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 11,
+				"h": 11
+			},
+			"sourceSize": {
+				"w": 11,
+				"h": 11
+			}
+		},
+		"missile-1.png": {
+			"frame": {
+				"x": 274,
+				"y": 1,
+				"w": 5,
+				"h": 16
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 5,
+				"h": 16
+			},
+			"sourceSize": {
+				"w": 5,
+				"h": 16
+			}
+		},
+		"missile-2.png": {
+			"frame": {
+				"x": 281,
+				"y": 1,
+				"w": 5,
+				"h": 16
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 5,
+				"h": 16
+			},
+			"sourceSize": {
+				"w": 5,
+				"h": 16
+			}
+		},
+		"missile-3.png": {
+			"frame": {
+				"x": 288,
+				"y": 1,
+				"w": 5,
+				"h": 16
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 5,
+				"h": 16
+			},
+			"sourceSize": {
+				"w": 5,
+				"h": 16
+			}
+		},
+		"player-1.png": {
+			"frame": {
+				"x": 295,
+				"y": 1,
+				"w": 16,
+				"h": 16
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 16
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 16
+			}
+		},
+		"player_ship-1.png": {
+			"frame": {
+				"x": 313,
+				"y": 1,
+				"w": 16,
+				"h": 20
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 20
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 20
+			}
+		},
+		"player_ship-2.png": {
+			"frame": {
+				"x": 331,
+				"y": 1,
+				"w": 16,
+				"h": 20
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 20
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 20
+			}
+		},
+		"player_ship-3.png": {
+			"frame": {
+				"x": 349,
+				"y": 1,
+				"w": 16,
+				"h": 20
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 20
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 20
+			}
+		}
+	},
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "spritesheet.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 366,
+			"h": 34
+		},
+		"scale": "1"
+	}
+}

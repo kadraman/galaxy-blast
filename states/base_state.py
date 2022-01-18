@@ -3,6 +3,7 @@ import pygame as pg
 from modules.display_utils import BackGround
 
 import constants
+from modules.sprite_sheet import SpriteSheet
 
 
 class BaseState(object):
@@ -27,6 +28,7 @@ class BaseState(object):
         self.previous_state = None  # not used
         self.active_index = None
         self.persist = persistent
+        self.sprites = SpriteSheet(constants.SPRITE_SHEET)
 
     def startup(self, persistent):
         """
@@ -35,6 +37,18 @@ class BaseState(object):
         :param persistent: a dict passed from state to state
         """
         self.persist = persistent
+        color = self.persist["screen_color"]
+        try:
+            color
+        except NameError:
+            color = self.default_screen_color
+        self.screen_color = color
+        background = self.persist["background"]
+        try:
+            background
+        except NameError:
+            background = self.default_background
+        self.background = background
 
     def cleanup(self):
         """

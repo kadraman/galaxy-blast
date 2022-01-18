@@ -1,5 +1,6 @@
 import pygame as pg
 
+from modules.sprite_sheet import SpriteSheet
 from .base_state import BaseState
 
 from modules.display_utils import BackGround, FancyText
@@ -29,19 +30,6 @@ class SplashScreen(BaseState):
 
     def startup(self, persistent):
         self.persist = persistent
-        color = self.persist["screen_color"]
-        try:
-            color
-        except NameError:
-            color = self.default_screen_color
-        self.screen_color = color
-        background = self.persist["background"]
-        try:
-            background
-        except NameError:
-            background = self.default_background
-        self.background = background
-
         persistent["fancy_text_1"] = self.fancy_text_1
         persistent["fancy_text_2"] = self.fancy_text_2
 

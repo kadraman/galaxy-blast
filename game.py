@@ -1,6 +1,7 @@
 import pygame as pg
 
 import constants
+from modules.sprite_sheet import SpriteSheet
 
 
 class Game(object):

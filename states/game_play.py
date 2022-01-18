@@ -8,6 +8,7 @@ from modules.misc_utils import safe_division
 from modules.starfield import StarField
 from modules.pixel_explosion import PixelExplosion
 from modules.sprite_sheet import SpriteSheet
+from sprites.boss_enemy import BossEnemy
 
 from .base_state import BaseState
 from sprites.player import Player
@@ -29,6 +30,8 @@ class GamePlay(BaseState):
         pygame.time.set_timer(constants.ADD_MINION_ENEMY, 450)
         # send ADD_MASTER_ENEMY event every 12000ms
         pygame.time.set_timer(constants.ADD_MASTER_ENEMY, 12000)
+        # send ADD_BOSS_ENEMY event every 18000ms
+        pygame.time.set_timer(constants.ADD_BOSS_ENEMY, 18000)
         # send DIVE_ENEMY event every 6000ms
         pygame.time.set_timer(constants.DIVE_ENEMY, 6000)
         # send ENEMY_FIRES event every 1000ms
@@ -39,7 +42,7 @@ class GamePlay(BaseState):
         self.shoot_sound = pg.mixer.Sound("./assets/sounds/321102__nsstudios__laser1.ogg")
         self.kill_sound = pg.mixer.Sound("./assets/sounds/170145__timgormly__8-bit-explosion1.ogg")
         self.hit_sound = pg.mixer.Sound("./assets/sounds/344303__musiclegends__explosion52.ogg")
-        self.level_up_sound = pg.mixer.Sound("./assets/sounds/609335__kenneth-cooney__levelup.ogg")
+        self.level_up_sound = pg.mixer.Sound("./assets/sounds/448266__henryrichard__sfx-clear.ogg")
         self.game_over_explosion = pg.mixer.Sound("./assets/sounds/368591__jofae__retro-explosion.ogg")
 
         self.score_font = pg.font.Font(constants.DEFAULT_FONT, 12)
@@ -76,6 +79,9 @@ class GamePlay(BaseState):
         self.master_enemies = 0
         self.attacking_master_enemies = 0
         self.max_attacking_master_enemies = 1
+        self.boss_enemies = 0
+        self.attacking_boss_enemies = 0
+        self.max_attacking_boss_enemies = 1
         self.player_missile_velocity = -250
         self.enemy_missile_velocity = 100
         self.lives = 3
@@ -113,6 +119,7 @@ class GamePlay(BaseState):
         self.wave_count = 0
         self.minion_1_enemies = 0
         self.minion_2_enemies = 0
+        self.minion_3_enemies = 0
         self.minion_1_y_velocity = 0
         self.minion_2_y_velocity = 50
         self.minion_3_y_velocity = 50
@@ -151,6 +158,9 @@ class GamePlay(BaseState):
         elif event.type == constants.ADD_MASTER_ENEMY:
             if self.master_enemies == 0:
                 self.add_enemy(EnemyType.MASTER)
+        elif event.type == constants.ADD_BOSS_ENEMY:
+            if self.boss_enemies == 0:
+                self.add_enemy(EnemyType.BOSS)
         elif event.type == constants.DIVE_ENEMY:
             self.enemy_attack()
         elif event.type == constants.ENEMY_FIRES:
@@ -214,10 +224,12 @@ class GamePlay(BaseState):
             self.pixel_explosion.render(surface)
 
     def update(self, dt):
-        self.master_enemies = 0
+        self.master_enemies = self.boss_enemies = 0
         for entity in self.all_enemies:
             if entity.enemy_type == EnemyType.MASTER:
                 self.master_enemies = 1
+            elif entity.enemy_type == EnemyType.BOSS:
+                self.boss_enemies = 1
 
         for entity in self.all_sprites:
             entity.update(dt)
@@ -232,17 +244,31 @@ class GamePlay(BaseState):
             else:
                 self.interval += 1
         else:
-            result = pg.sprite.groupcollide(self.all_enemies, self.player_missiles, True, True)
+            result = pg.sprite.groupcollide(self.all_enemies, self.player_missiles, False, True)
             if result:
                 for key in result:
-                    self.score += key.points
+                    kill_enemy = False
+                    if key.enemy_type == EnemyType.BOSS:
+                        if key.hits >= key.max_hits:
+                            self.boss_enemies = 0
+                            kill_enemy = True
+                        else:
+                            if constants.PLAY_SOUNDS:
+                                self.kill_sound.play()
+                            self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
+                    elif key.enemy_type == EnemyType.MASTER:
+                        self.master_enemies = 0
+                        kill_enemy = True
+                    else:
+                        kill_enemy = True
+                    if kill_enemy:
+                        key.kill()
+                        self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
+                        self.score += key.points
+                        if constants.PLAY_SOUNDS:
+                            self.kill_sound.play()
                     if self.score > self.high_score:
                         self.high_score = self.score
-                    self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
-                    if constants.PLAY_SOUNDS:
-                        self.kill_sound.play()
-                    if key.enemy_type == EnemyType.MASTER:
-                        self.master_enemies = 0
 
             result = pygame.sprite.spritecollide(self.player, self.enemy_missiles, True)
             if result:
@@ -313,6 +339,16 @@ class GamePlay(BaseState):
                                 number_of_images=2,
                                 scaled_width=30, scaled_height=28)
             self.master_enemies += 1
+        elif enemy_type == EnemyType.BOSS:
+            y_start = 180
+            x_start = 320
+            x_velocity = 200
+            enemy = BossEnemy(enemy_type, self.sprites, self.player.rect,
+                                center=(x_start, y_start),
+                                x_velocity=x_velocity, y_velocity=0,
+                                number_of_images=2,
+                                scaled_width=60, scaled_height=60)
+            self.boss_enemies += 1
 
         self.all_enemies.add(enemy)
         self.all_sprites.add(enemy)
@@ -332,6 +368,7 @@ class GamePlay(BaseState):
         if self.attacking_minion_enemies < self.max_attacking_minion_enemies:
             for entity in self.all_enemies:
                 if not entity.is_attacking() and entity.enemy_type != EnemyType.MASTER \
+                        and entity.enemy_type != EnemyType.BOSS \
                         and entity.enemy_type != EnemyType.MINION_1 and randint(0, 2) < 1:
                     entity.attack()
 
@@ -341,10 +378,13 @@ class GamePlay(BaseState):
             enemy_index = randint(0, num_enemies - 1)
             start_missile = None
             start_mine = None
+            start_beam = None
             for index, enemy in enumerate(self.all_enemies):
                 # don't fire if master enemy as they lay mines
                 if enemy.enemy_type == EnemyType.MASTER and randint(1, 10) > 5:
                     start_mine = enemy.rect.center
+                elif enemy.enemy_type == EnemyType.BOSS and randint(1, 3) == 2:
+                    start_beam = enemy.rect.center
                 elif enemy.enemy_type == EnemyType.MINION_1 and index == enemy_index:
                     start_missile = enemy.rect.center
                 elif enemy.enemy_type == EnemyType.MINION_2 and index == enemy_index:
@@ -376,6 +416,17 @@ class GamePlay(BaseState):
                     self.enemy_mines.add(mine)
                     self.all_sprites.add(mine)
 
+            if start_beam:
+                for i in range(3):
+                    y_velocity = 250
+
+                    missile = Missile(self.sprites, 0, y_velocity, False)
+                    missile.rect.centerx = start_beam[0]
+                    missile.rect.centery = start_beam[1] + (20 * i)
+
+                    self.enemy_missiles.add(missile)
+                    self.all_sprites.add(missile)
+
     def draw_scores_and_lives(self, surface):
         score = self.score_font.render('SCORE', True, (255, 20, 20))
         surface.blit(score, (constants.SCREEN_WIDTH / 2 - 280 - score.get_rect().width / 2, 2))
@@ -394,10 +445,13 @@ class GamePlay(BaseState):
             surface.blit(self.life_image, (constants.SCREEN_WIDTH - (i * 32 + 16), 20))
 
     def next_wave(self):
+        if constants.PLAY_SOUNDS:
+            self.level_up_sound.play()
         self.minion_1_enemies = 0
         self.minion_2_enemies = 0
         self.minion_3_enemies = 0
         self.master_enemies = 0
+        self.boss_enemies = 0
         self.wave_count += 1
         self.minion_1_y_velocity += 0   # does not dive
         self.minion_2_y_velocity += 5

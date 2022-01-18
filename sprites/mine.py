@@ -51,12 +51,12 @@ class Mine(pg.sprite.Sprite):
         self.timer += 1
         if self.timer % self.interval == 0:
             self.rotation += 45
-        if self.rotation >= MAX_MINE_DISPLAY:
+        if self.rotation >= 360:
             self.rotation = 0
         self.rect.move_ip(self.x_velocity * dt, self.y_velocity * dt)
 
         # kill mine after certain period
-        if self.timer > self.mine_display_interval:
+        if self.timer > MAX_MINE_DISPLAY:
             if self.image_index == 3:
                 self.kill()
             else:

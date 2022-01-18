@@ -17,9 +17,11 @@ class Missile(pg.sprite.Sprite):
 
         self.number_of_images = 2
         sprites = SpriteSheet('./assets/images/missile-1.png')
-        self.images = sprites.load_strip([0, 0, 3, 10], 1, -1)
+        self.images = sprites.load_strip([0, 0, 5, 16], 1, -1)
         sprites = SpriteSheet('./assets/images/missile-2.png')
-        self.images.append(sprites.image_at([0, 0, 3, 10], -1))
+        self.images.append(sprites.image_at([0, 0, 5, 16], -1))
+        sprites = SpriteSheet('./assets/images/missile-3.png')
+        self.images.append(sprites.image_at([0, 0, 5, 16], -1))
 
         '''
         self.images = sprites.load_strip([
@@ -30,9 +32,9 @@ class Missile(pg.sprite.Sprite):
         '''
 
         # scale image for enhanced retro effect!
-        for index, image in enumerate(self.images):
-            self.images[index] = pg.transform.scale(image, (4, 20))
-        self.base_image = self.images[0]
+        # for index, image in enumerate(self.images):
+        #     self.images[index] = pg.transform.scale(image, (5, 20))
+        # self.base_image = self.images[0]
 
         self.surface = self.images[0]
         self.rect = self.surface.get_rect(
