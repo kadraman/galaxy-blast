@@ -1,10 +1,8 @@
 import pygame as pg
 
-from modules.display_utils import BackGround, FancyText
-
-from .base_state import BaseState
-
 import constants
+from modules.display_utils import BackGround, FancyText
+from .base_state import BaseState
 
 
 class GameOver(BaseState):

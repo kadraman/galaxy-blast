@@ -1,17 +1,16 @@
 import sys
+
 import pygame as pg
 
-from states.display_test import DisplayTest
-from states.splash_screen import SplashScreen
-from states.main_menu import MainMenu
-from states.game_play import GamePlay
-from states.game_over import GameOver
-from states.settings import Settings
-from states.controller_test import ControllerTest
-
-from game import Game
-
 import constants
+from game import Game
+from states.controller_test import ControllerTest
+from states.display_test import DisplayTest
+from states.game_over import GameOver
+from states.game_play import GamePlay
+from states.main_menu import MainMenu
+from states.settings import Settings
+from states.splash_screen import SplashScreen
 
 if __name__ == "__main__":
     # setup mixer to avoid sound lag
@@ -25,7 +24,7 @@ if __name__ == "__main__":
         joystick.init()
         print("Enabled controller: {0}".format(joystick.get_name()))
     except pg.error:
-        print("no controllers found.")
+        print("no controllers found")
     # hide the mouse cursor
     pg.mouse.set_visible(0)
     # set windows title

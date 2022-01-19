@@ -1,4 +1,5 @@
 import pygame as pg
+
 try:
     import queue
 except ImportError:
@@ -6,10 +7,7 @@ except ImportError:
 
 from .base_state import BaseState
 
-from modules.display_utils import BackGround
 from modules.display_utils import TextPrint
-
-import constants
 
 
 class ControllerTest(BaseState):

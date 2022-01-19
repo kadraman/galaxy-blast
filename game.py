@@ -1,7 +1,6 @@
 import pygame as pg
 
 import constants
-from modules.sprite_sheet import SpriteSheet
 
 
 class Game(object):
@@ -17,10 +16,9 @@ class Game(object):
     def __init__(self, screen, controller, states, start_state):
         """
         Initialize the Game object.
-
-        screen: the pygame display surface
-        states: a dict mapping state-names to GameState objects
-        start_state: name of the first active game state
+        :param screen: the pygame display surface
+        :param states: a dict mapping state-names to GameState objects
+        :param start_state: name of the first active game state
         """
         self.done = False
         self.screen = screen
@@ -54,8 +52,7 @@ class Game(object):
     def update(self, dt):
         """
         Check for state flip and update active state.
-
-        dt: milliseconds since last frame
+        :param dt: delta time since last frame
         """
         if self.state.quit:
             self.done = True
@@ -73,7 +70,6 @@ class Game(object):
         """
         Main game loop
         """
-
         # run startup on first state
         persistent = self.state.persist
         self.state.startup(persistent)
@@ -83,8 +79,8 @@ class Game(object):
 
         dt = 0
         while not self.done:
-            # dt = self.clock.tick(self.fps)
-            dt = self.clock.tick(self.fps)/1000.0
+            # dt = self.clock.tick(self.fps) * 0.1
+            dt = self.clock.tick(self.fps) / 1000.0
             self.event_loop()
             self.update(dt)
             self.draw()

@@ -1,8 +1,7 @@
 import pygame as pg
 
-from modules.display_utils import BackGround
-
 import constants
+from modules.display_utils import BackGround
 from modules.sprite_sheet import SpriteSheet
 
 
@@ -69,7 +68,7 @@ class BaseState(object):
     def update(self, dt):
         """
         Update the state. Called by the Game object once per frame
-        :param dt: time since last frame
+        :param dt: delta time since last frame
         """
         pass
 
@@ -111,4 +110,3 @@ class BaseState(object):
                     self.active_index -= 1
         elif event.type == pg.JOYBUTTONDOWN:
             self.handle_action()
-

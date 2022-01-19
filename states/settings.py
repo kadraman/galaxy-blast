@@ -1,10 +1,8 @@
 import pygame as pg
 
-from .base_state import BaseState
-
-from modules.display_utils import BackGround
-
 import constants
+from modules.display_utils import BackGround
+from .base_state import BaseState
 
 
 class Settings(BaseState):

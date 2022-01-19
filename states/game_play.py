@@ -1,25 +1,23 @@
+from random import randint
+
 import pygame as pg
 import pygame.sprite
 
-from random import randint
-
+import constants
 from modules import sprite_sheet
 from modules.misc_utils import safe_division
-from modules.starfield import StarField
 from modules.pixel_explosion import PixelExplosion
 from modules.sprite_sheet import SpriteSheet
-from sprites.boss_enemy import BossEnemy
-
-from .base_state import BaseState
-from sprites.player import Player
+from modules.starfield import StarField
 from sprites.base_enemy import EnemyType
+from sprites.boss_enemy import BossEnemy
+from sprites.explosion import Explosion
 from sprites.master_enemy import MasterEnemy
+from sprites.mine import Mine
 from sprites.minion_enemy import MinionEnemy
 from sprites.missile import Missile
-from sprites.explosion import Explosion
-from sprites.mine import Mine
-
-import constants
+from sprites.player import Player
+from .base_state import BaseState
 
 
 class GamePlay(BaseState):
@@ -45,11 +43,11 @@ class GamePlay(BaseState):
         self.level_up_sound = pg.mixer.Sound("./assets/sounds/448266__henryrichard__sfx-clear.ogg")
         self.game_over_explosion = pg.mixer.Sound("./assets/sounds/368591__jofae__retro-explosion.ogg")
 
-        self.score_font = pg.font.Font(constants.DEFAULT_FONT, 12)
+        self.score_font = pg.font.Font(constants.DEFAULT_FONT, constants.SCORE_FONT_SIZE)
 
         self.x_velocity = 1
         self.next_state = "MAIN_MENU"
-        self.player_velocity = 100
+        self.player_velocity = 100  # original player velocity
         self.sprites = sprite_sheet.SpriteSheet(constants.SPRITE_SHEET)
         self.player = Player(self.sprites, self.player_velocity, constants.PLAYER_WIDTH, constants.PLAYER_HEIGHT)
         self.all_sprites = pg.sprite.Group()
@@ -58,9 +56,8 @@ class GamePlay(BaseState):
         self.enemy_missiles = pg.sprite.Group()
         self.enemy_mines = pg.sprite.Group()
         self.player_missiles = pg.sprite.Group()
-
-        life_sprite = SpriteSheet('./assets/images/player-1.png')
-        self.life_image = life_sprite.image_at(pg.Rect(0, 0, 16, 16))
+        self.life_image = self.sprites.image_at(pg.Rect(constants.SS_PLAYER_LIVES_X, constants.SS_PLAYER_LIVES_Y,
+                                                        constants.SS_PLAYER_WIDTH, constants.SS_PLAYER_HEIGHT))
 
         self.wave_count = 0
         self.minion_1_enemies = 0
@@ -250,13 +247,14 @@ class GamePlay(BaseState):
                 for key in result:
                     kill_enemy = False
                     if key.enemy_type == EnemyType.BOSS:
-                        if key.hits >= key.max_hits:
+                        if key.hits >= key.max_hits-1:
                             self.boss_enemies = 0
                             kill_enemy = True
                         else:
                             if constants.PLAY_SOUNDS:
                                 self.kill_sound.play()
                             self.all_sprites.add(Explosion(self.sprites, key.rect.center, key.rect.size))
+                            key.hits += 1
                     elif key.enemy_type == EnemyType.MASTER:
                         self.master_enemies = 0
                         kill_enemy = True

@@ -1,11 +1,8 @@
 import pygame as pg
 
-from modules.sprite_sheet import SpriteSheet
-from .base_state import BaseState
-
-from modules.display_utils import BackGround, FancyText
-
 import constants
+from modules.display_utils import BackGround, FancyText
+from .base_state import BaseState
 
 
 class SplashScreen(BaseState):
@@ -24,7 +21,8 @@ class SplashScreen(BaseState):
         self.fancy_text_2.color_direction = [0, 1, 0]
         self.fancy_text_2.color_speed = 5
 
-        self.intro_sound = pg.mixer.Sound("./assets/sounds/368691__fartbiscuit1700__8-bit-arcade-video-game-start-sound-effect-gun-reload-and-jump.ogg")
+        self.intro_sound = pg.mixer.Sound(
+            "./assets/sounds/368691__fartbiscuit1700__8-bit-arcade-video-game-start-sound-effect-gun-reload-and-jump.ogg")
         if constants.PLAY_SOUNDS:
             self.intro_sound.play()
 

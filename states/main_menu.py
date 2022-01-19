@@ -1,14 +1,10 @@
 import pygame as pg
 
-from modules import sprite_sheet
+import constants
+from modules.display_utils import BackGround
 from sprites.base_enemy import EnemyType
 from sprites.master_enemy import MasterEnemy
-
 from .base_state import BaseState
-
-from modules.display_utils import BackGround
-
-import constants
 
 
 class MainMenu(BaseState):
@@ -38,9 +34,9 @@ class MainMenu(BaseState):
         self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites, None,
                                  center=(0, 240),
                                  x_velocity=150, y_velocity=0,
-                                 number_of_images=2,
-                                 scaled_width=constants.MASTER_ENEMY_WIDTH*2,
-                                 scaled_height=constants.MASTER_ENEMY_HEIGHT*2)
+                                 number_of_images=constants.SS_MASTER_ENEMY_IMAGES,
+                                 scaled_width=constants.MASTER_ENEMY_WIDTH * 2,
+                                 scaled_height=constants.MASTER_ENEMY_HEIGHT * 2)
 
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.enemy)

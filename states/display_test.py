@@ -1,11 +1,7 @@
 import pygame as pg
 
-from .base_state import BaseState
-
-from modules.display_utils import BackGround
 from modules.display_utils import TextPrint
-
-import constants
+from .base_state import BaseState
 
 
 class DisplayTest(BaseState):
@@ -55,6 +51,5 @@ class DisplayTest(BaseState):
 
         tp.draw(surface, "[Press ESC to stop test]")
 
-        # tp.draw(surface, "Number of joysticks: {}".format(joystick_count))
-        # tp.indent()
-
+        tp.draw(surface, "Nothing to see here yet...")
+        tp.indent()
