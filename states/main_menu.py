@@ -3,7 +3,7 @@ import pygame as pg
 import constants
 from modules.display_utils import BackGround
 from sprites.base_enemy import EnemyType
-from sprites.master_enemy import MasterEnemy
+from sprites.minion_enemy import MinionEnemy
 from .base_state import BaseState
 
 
@@ -31,12 +31,13 @@ class MainMenu(BaseState):
         self.fancy_text_1 = self.persist["fancy_text_1"]
         self.fancy_text_2 = self.persist["fancy_text_2"]
 
-        self.enemy = MasterEnemy(EnemyType.MASTER, self.sprites, None,
-                                 center=(0, 240),
-                                 x_velocity=150, y_velocity=0,
-                                 number_of_images=constants.SS_MASTER_ENEMY_IMAGES,
-                                 scaled_width=constants.MASTER_ENEMY_WIDTH * 2,
-                                 scaled_height=constants.MASTER_ENEMY_HEIGHT * 2)
+        self.enemy = MinionEnemy(EnemyType.MINION_1, self.sprites,
+                                 player_center=(300, 200),
+                                 enemy_center=(300, 200),
+                                 x_velocity=100, y_velocity=0,
+                                 number_of_images=constants.SS_ENEMY1_IMAGES,
+                                 scaled_width=constants.ENEMY1_WIDTH * 2,
+                                 scaled_height=constants.ENEMY1_HEIGHT * 2)
 
         self.all_sprites = pg.sprite.Group()
         self.all_sprites.add(self.enemy)

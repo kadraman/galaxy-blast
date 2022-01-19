@@ -449,6 +449,7 @@ class GamePlay(BaseState):
     def next_wave(self):
         if constants.PLAY_SOUNDS:
             self.level_up_sound.play()
+        self.score += 50
         self.minion_1_enemies = 0
         self.minion_2_enemies = 0
         self.minion_3_enemies = 0
