@@ -17,15 +17,16 @@ The individual files have retained original filenames with id and user for refer
 
 ## Running the game
 
-The game should work with Python 2 and 3, please make sure Pygame is installed:
+The game is designed to work with Python 3 and can be downloaded and configured using the following from 
+a command prompt:
 
 ```aidl
-pip install pygame
-```
-
-and then run the game using:
-
-```aidl
+pip install virtualenv
+git clone https://github.com/kadraman/galaxy-blast.git
+cd galaxy-blast
+python -m venv dev
+source dev/bin/activate
+pip install -r requirements.txt
 python main.py
 ```
 
