@@ -127,7 +127,7 @@ class GamePlay(BaseState):
         self.attacking_minion_enemies = 0
         self.max_attacking_minion_enemies = 3
         self.player_missile_velocity = -250
-        self.enemy_missile_velocity = 100
+        self.enemy_missile_velocity = 125
         self.lives = 3
         self.score = 0
         self.freeze = False

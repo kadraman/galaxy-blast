@@ -30,12 +30,6 @@ pip install -r requirements.txt
 python main.py
 ```
 
-As a "bonus" there is also a `build.sh` script that I used to "compile" the project and
-install it onto a handheld [Anbernic RG350M](https://anbernic.com/products/rg351m-anbernic-retro-game-rg350m-video-games-game-console-ps1-game-64bit-opendingux-3-5-inch-2500-games-rg351-emulator)
-retro console (since this runs [Opendingux](https://opendingux.net/) with an old version of Python!)
-
-![Running on Anbernic RG350M](media/retro-console.png)
-
 ## Playing the game
 
 The game play should be recognisable - simply kill as many enemies as possible (as many times as 
